@@ -38,7 +38,7 @@ carrier98 is an LLM-to-LLM wire protocol for structured data. It modulates seria
 
 The carrier stays the same. The human gets JSON. Everyone wins.
 
-**Jump to:** [Philosophy](#philosophy) · [Wire Format](#wire-format) · [Alphabet](#alphabet) · [Binary Format](#binary-format) · [Benchmarks](#benchmarks) · [Implementations](#implementations)
+**Jump to:** [Philosophy](#philosophy) · [Wire Format](#wire-format) · [Alphabet](#alphabet) · [Binary Format](#binary-format) · [Benchmarks](#benchmarks) · [Implementations](#implementations) · [**fiche** →](/fiche)
 
 ---
 
@@ -251,16 +251,20 @@ carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 b
 
 **carrier98** and **fiche** are siblings:
 
-- **carrier98** = the signal. Opaque binary wrapped in hieroglyphs. Maximum density. The model shuttles it without parsing.
-- **fiche** = the tape. Model-readable structured data with Unicode delimiters. The model can parse and operate on it.
+- **carrier98** = the pipe. Opaque binary wrapped in hieroglyphs. Maximum density. The model shuttles it without parsing.
+- **fiche** = the format. Model-readable structured data with Unicode delimiters. The model can parse and operate on it.
 
-Like microfiche from the 90s - dense data on film, insert to retrieve. fiche is the tape format for the new era.
+> **In practice:** When you need a model to *work with* data, use fiche. When you need a model to *move* data untouched, use carrier98. The pipe carries the format.
+
+**[Read the full fiche specification →](/fiche)**
 
 ---
 
-## fiche Format
+## fiche Format (Summary)
 
 A model-readable structured data format. Uses rare Unicode delimiters so models parse structure with minimal tokens. No escaping needed - quotes, braces, newlines are just content.
+
+For the complete specification, examples, and design philosophy, see the **[fiche documentation](/fiche)**.
 
 ### Delimiters
 
