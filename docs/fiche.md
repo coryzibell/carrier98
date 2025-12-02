@@ -14,7 +14,7 @@ title: fiche
     </div>
     <div class="meta-field">
       <span class="meta-label">Revision</span>
-      <span class="meta-value">1.1</span>
+      <span class="meta-value">1.2</span>
     </div>
     <div class="meta-field">
       <span class="meta-label">Status</span>
@@ -117,6 +117,60 @@ We tested multiple approaches for nesting:
 - Works on smaller, cheaper models (Haiku) without any format explanation
 
 > **The test:** We gave Haiku raw fiche data with nested structures—no format explanation, no schema documentation. It parsed the data correctly on first attempt, even identifying relationships across nesting levels.
+
+---
+
+## Model Accuracy: fiche vs TOON
+
+We benchmarked fiche against [TOON](https://github.com/toon-format/toon)'s published results using the same GitHub repositories dataset (top repositories by stars).
+
+### Haiku Retrieval Accuracy
+
+TOON's benchmark showed Haiku struggling with their whitespace-based format:
+
+| Format | TOON Benchmark | fiche Benchmark |
+|--------|----------------|-----------------|
+| Accuracy | 59.8% (125/209) | **100%** (10/10 complex queries) |
+| Format explanation | Required | None (cold parse) |
+
+We tested fiche with 10 complex retrieval questions including aggregations, sorting, filtering, ratio calculations, and counting—all answered correctly by Haiku with zero format explanation.
+
+### Why the Difference?
+
+**TOON** uses whitespace indentation for structure. Smaller models struggle to:
+- Track indentation depth accurately
+- Distinguish significant whitespace from formatting
+- Parse collapsed/minified content (impossible with TOON)
+
+**fiche** uses explicit Unicode delimiters (`◉`, `┃`, `⸱`, `①②③`). Models can:
+- Count visible characters reliably
+- Parse structure without inferring from spacing
+- Handle minified single-string format identically to expanded
+
+### Token Efficiency Comparison
+
+Using TOON's GitHub repos benchmark data (50 records):
+
+| Format | Tokens | vs JSON |
+|--------|--------|---------|
+| JSON | 6,757 | baseline |
+| TOON | ~8,744 | +29% worse |
+| fiche | 5,918 | **-12.4% better** |
+
+On flat tabular data, fiche outperforms both JSON and TOON. TOON's strength is mixed nested structures—but fiche handles those too with circled number depth markers.
+
+### The Full Picture
+
+| Capability | fiche | TOON |
+|------------|-------|------|
+| Flat tabular | -12% tokens | +6% overhead |
+| Nested structures | ✓ (①②③ depth) | ✓ (indentation) |
+| Deep nesting (5+ levels) | ✓ stable | degrades |
+| Minifiable | ✓ single string | ✗ whitespace required |
+| Haiku accuracy | 100% cold | 59.8% |
+| Human readability | good | better |
+
+fiche fills an unclaimed niche: **nested + minifiable + token-efficient + small-model-friendly**.
 
 ---
 
