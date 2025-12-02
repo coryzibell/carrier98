@@ -38,7 +38,7 @@ carrier98 is an LLM-to-LLM wire protocol for structured data. It modulates seria
 
 The carrier stays the same. The human gets JSON. Everyone wins.
 
-**Jump to:** [Philosophy](#philosophy) · [Wire Format](#wire-format) · [Alphabet](#alphabet) · [Binary Format](#binary-format) · [Benchmarks](#benchmarks) · [Implementations](#implementations) · [**fiche** →](/fiche)
+**Jump to:** [Philosophy](#philosophy) · [Wire Format](#wire-format) · [Alphabet](#alphabet) · [Binary Format](#binary-format) · [Benchmarks](#benchmarks) · [Implementations](#implementations) · [**fiche** →](fiche)
 
 ---
 
@@ -256,7 +256,7 @@ carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 b
 
 > **In practice:** When you need a model to *work with* data, use fiche. When you need a model to *move* data untouched, use carrier98. The pipe carries the format.
 
-**[Read the full fiche specification →](/fiche)**
+**[Read the full fiche specification →](fiche)**
 
 ---
 
@@ -264,7 +264,7 @@ carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 b
 
 A model-readable structured data format. Uses rare Unicode delimiters so models parse structure with minimal tokens. No escaping needed - quotes, braces, newlines are just content.
 
-For the complete specification, examples, and design philosophy, see the **[fiche documentation](/fiche)**.
+For the complete specification, examples, and design philosophy, see the **[fiche documentation](fiche)**.
 
 ### Delimiters
 
