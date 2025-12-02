@@ -179,9 +179,31 @@ Values: 1, "alice", 2, "bob"
 𓍹╣◟╥◕◝▰◣◥▟╺▖◘▰◝▤◀╧𓍺
 ```
 
-**Size comparison:**
-- JSON: 57 bytes
-- carrier98: ~25 bytes binary → ~39 chars encoded
+---
+
+## Benchmarks
+
+**What the LLM sees** (characters in context window):
+
+| Payload | JSON | carrier98+brotli | Context Reduction |
+|---------|------|------------------|-------------------|
+| 1 KB | 1,055 | 403 | 62% smaller |
+| 10 KB | 14,080 | 1,075 | 92% smaller |
+| 100 KB | 245,081 | 7,885 | **97% smaller** |
+
+At 100KB, you're packing 245,081 characters into 7,885. That's a **31x compression** in context space.
+
+**Wire overhead:**
+
+carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 bytes UTF-8 per character, so wire size is ~1.5x larger than JSON+brotli. But the model doesn't see wire bytes - it sees characters. And those characters are 97% fewer.
+
+| Payload | JSON + server brotli | carrier98 + server brotli | Wire Overhead |
+|---------|---------------------|---------------------------|---------------|
+| 1 KB | 346 bytes | 529 bytes | 1.5x |
+| 10 KB | 794 bytes | 1,359 bytes | 1.7x |
+| 100 KB | 6,022 bytes | 9,154 bytes | 1.5x |
+
+**The trade-off:** Pay 1.5x bandwidth, get 31x context density.
 
 ---
 
