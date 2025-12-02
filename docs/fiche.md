@@ -64,7 +64,7 @@ fiche follows this principle: **one document, two readers.**
 | `◈` | U+25C8 | White diamond containing black | Array element separator (flat) |
 | `①②③...` | U+2460+ | Circled numbers | Nested depth levels |
 | `∅` | U+2205 | Empty set | Null value |
-| `⸱` | U+2E31 | Word separator middle dot | Minified space |
+| `▓` | U+2593 | Dark shade | Minified space |
 
 These characters were chosen for:
 - **Rarity**: Almost never appear in real data
@@ -142,7 +142,7 @@ We tested fiche with 10 complex retrieval questions including aggregations, sort
 - Distinguish significant whitespace from formatting
 - Parse collapsed/minified content (impossible with TOON)
 
-**fiche** uses explicit Unicode delimiters (`◉`, `┃`, `⸱`, `①②③`). Models can:
+**fiche** uses explicit Unicode delimiters (`◉`, `┃`, `▓`, `①②③`). Models can:
 - Count visible characters reliably
 - Parse structure without inferring from spacing
 - Handle minified single-string format identically to expanded
@@ -273,10 +273,10 @@ Tested against actual SWAPI data with nested arrays (films, vehicles, starships 
 
 <div class="readout">
   <span class="readout-label">SWAPI IN FICHE</span>
-@people┃name:str┃height:str┃mass:str┃films:@┃vehicles:@┃starships:@◉Luke⸱Skywalker┃172┃77①film/1①film/2①film/3①film/6①vehicle/14①vehicle/30①starship/12①starship/22◉C-3PO┃167┃75①film/1①film/2①film/3①film/4①film/5①film/6∅∅◉Darth⸱Vader┃202┃136①film/1①film/2①film/3①film/6∅①starship/13
+@people┃name:str┃height:str┃mass:str┃films:@┃vehicles:@┃starships:@◉Luke▓Skywalker┃172┃77①film/1①film/2①film/3①film/6①vehicle/14①vehicle/30①starship/12①starship/22◉C-3PO┃167┃75①film/1①film/2①film/3①film/4①film/5①film/6∅∅◉Darth▓Vader┃202┃136①film/1①film/2①film/3①film/6∅①starship/13
 </div>
 
-Note the `⸱` (U+2E31) replacing spaces in names—this prevents whitespace mangling in terminals and parsers while remaining visually scannable. Models read it as a space naturally.
+Note the `▓` (U+2593) replacing spaces in names—this prevents whitespace mangling in terminals and parsers while remaining visually distinct. Models read it as a space naturally.
 
 **Result:** 35% reduction, parsed correctly by Haiku with zero format explanation.
 
