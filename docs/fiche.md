@@ -31,10 +31,7 @@ Named for microfiche: data compressed onto film, readable by machine and eye ali
 
 <div class="readout">
   <span class="readout-label">EXAMPLE OUTPUT</span>
-@users┃id:int┃name:str┃active:bool
-◉1┃alice┃true
-◉2┃bob┃false
-◉3┃carol┃true
+@users┃id:int┃name:str┃active:bool▓◉1┃alice┃true▓◉2┃bob┃false▓◉3┃carol┃true
 </div>
 
 ---
@@ -81,7 +78,7 @@ fiche handles nested data using circled number delimiters. Each number represent
 
 <div class="readout">
   <span class="readout-label">NESTED STRUCTURE</span>
-@people┃name:str┃height:str┃films:@◉Luke Skywalker┃172①A New Hope①Empire Strikes Back◉C-3PO┃167①A New Hope
+@people┃name:str┃height:str┃films:@▓◉Luke▓Skywalker┃172①A▓New▓Hope①Empire▓Strikes▓Back▓◉C-3PO┃167①A▓New▓Hope
 </div>
 
 **Depth markers:**
@@ -96,7 +93,7 @@ Unicode provides circled numbers ①-⑳ (1-20), with extended ranges ㉑-㊿ (2
 
 <div class="readout">
   <span class="readout-label">TWO-LEVEL NESTING</span>
-@films┃title:str┃director:str┃characters:@◉A New Hope┃George Lucas①Luke Skywalker②Tatooine②Jedi①Leia Organa②Alderaan②Rebel Leader◉Empire Strikes Back┃Irvin Kershner①Luke Skywalker②Dagobah②Jedi
+@films┃title:str┃director:str┃characters:@▓◉A▓New▓Hope┃George▓Lucas①Luke▓Skywalker②Tatooine②Jedi①Leia▓Organa②Alderaan②Rebel▓Leader▓◉Empire▓Strikes▓Back┃Irvin▓Kershner①Luke▓Skywalker②Dagobah②Jedi
 </div>
 
 The structure reads naturally: characters (`①`) belong to films, attributes (`②`) belong to characters.
@@ -207,10 +204,7 @@ Each row begins with `◉`, followed by values in schema order, separated by `�
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@crew┃id:int┃name:str┃role:str
-◉1┃Glenn┃Pilot
-◉2┃Carpenter┃Pilot
-◉3┃Johnson┃Computer
+@crew┃id:int┃name:str┃role:str▓◉1┃Glenn┃Pilot▓◉2┃Carpenter┃Pilot▓◉3┃Johnson┃Computer
 </div>
 
 **Equivalent JSON:**
@@ -226,19 +220,14 @@ Each row begins with `◉`, followed by values in schema order, separated by `�
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@missions┃name:str┃crew:str[]
-◉Mercury-Atlas 6┃Glenn
-◉Apollo 11┃Armstrong◈Aldrin◈Collins
+@missions┃name:str┃crew:str[]▓◉Mercury-Atlas▓6┃Glenn▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins
 </div>
 
 ### With Nulls
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@telemetry┃timestamp:int┃altitude:float┃notes:str
-◉1621234567┃408.5┃∅
-◉1621234568┃∅┃Signal lost
-◉1621234569┃412.1┃Reacquired
+@telemetry┃timestamp:int┃altitude:float┃notes:str▓◉1621234567┃408.5┃∅▓◉1621234568┃∅┃Signal▓lost▓◉1621234569┃412.1┃Reacquired
 </div>
 
 ### Embedded Content
@@ -247,11 +236,7 @@ fiche handles embedded JSON, code, or any content without escaping:
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@logs┃level:str┃message:str
-◉error┃Failed to parse {"key": "value"}
-◉info┃User said "hello, world"
-◉debug┃Line contains
-newlines
+@logs┃level:str┃message:str▓◉error┃Failed▓to▓parse▓{"key":▓"value"}▓◉info┃User▓said▓"hello,▓world"▓◉debug┃Multiline▓content▓works
 </div>
 
 The heavy pipe `┃` delimiter is rare enough that typical content passes through unchanged.
@@ -322,9 +307,11 @@ They are siblings. Same family, different jobs.
 # JSON → fiche
 echo '{"users":[{"id":1,"name":"alice"}]}' | base-d fiche
 
-# fiche → JSON
-echo '@users┃id:int┃name:str
-◉1┃alice' | base-d fiche -d
+# JSON → fiche (minified single line)
+echo '{"users":[{"id":1,"name":"alice"}]}' | base-d fiche -m
+
+# fiche → JSON (works with both formats)
+echo '@users┃id:int┃name:str▓◉1┃alice' | base-d fiche -d
 
 # Pretty-print JSON output
 base-d fiche -d -p < data.fiche
@@ -333,10 +320,11 @@ base-d fiche -d -p < data.fiche
 ### Library
 
 ```rust
-use base_d::{encode_fiche, decode_fiche};
+use base_d::{encode_fiche, encode_fiche_minified, decode_fiche};
 
 let json = r#"{"users":[{"id":1,"name":"alice"}]}"#;
-let fiche = encode_fiche(json)?;
+let fiche = encode_fiche(json)?;           // multi-line
+let minified = encode_fiche_minified(json)?; // single line
 let restored = decode_fiche(&fiche, false)?;
 ```
 
