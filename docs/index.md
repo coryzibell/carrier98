@@ -238,6 +238,8 @@ carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 b
 
 **Why this matters:** Bandwidth is cheap. LLM inference isn't. Every character the model parses costs compute. At 100KB, carrier98 saves the model from parsing 237,196 characters of JSON syntax - all those braces, quotes, colons, and commas. That's compute you're not paying for.
 
+**The economics:** JSON parsing on a CPU is essentially free - deterministic, fast, measured in microseconds. LLM inference is expensive - probabilistic, slow, measured in dollars per million tokens. carrier98 moves the parsing cost from expensive (model) to cheap (client CPU). Even if bandwidth is your bottleneck, you're still saving on the expensive side of the equation.
+
 ---
 
 ## Limitations
