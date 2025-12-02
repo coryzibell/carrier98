@@ -64,6 +64,7 @@ fiche follows this principle: **one document, two readers.**
 | `◈` | U+25C8 | White diamond containing black | Array element separator (flat) |
 | `①②③...` | U+2460+ | Circled numbers | Nested depth levels |
 | `∅` | U+2205 | Empty set | Null value |
+| `⸱` | U+2E31 | Word separator middle dot | Minified space |
 
 These characters were chosen for:
 - **Rarity**: Almost never appear in real data
@@ -218,8 +219,10 @@ Tested against actual SWAPI data with nested arrays (films, vehicles, starships 
 
 <div class="readout">
   <span class="readout-label">SWAPI IN FICHE</span>
-@people┃name:str┃height:str┃mass:str┃films:@┃vehicles:@┃starships:@◉Luke Skywalker┃172┃77①film/1①film/2①film/3①film/6①vehicle/14①vehicle/30①starship/12①starship/22◉C-3PO┃167┃75①film/1①film/2①film/3①film/4①film/5①film/6∅∅◉Darth Vader┃202┃136①film/1①film/2①film/3①film/6∅①starship/13
+@people┃name:str┃height:str┃mass:str┃films:@┃vehicles:@┃starships:@◉Luke⸱Skywalker┃172┃77①film/1①film/2①film/3①film/6①vehicle/14①vehicle/30①starship/12①starship/22◉C-3PO┃167┃75①film/1①film/2①film/3①film/4①film/5①film/6∅∅◉Darth⸱Vader┃202┃136①film/1①film/2①film/3①film/6∅①starship/13
 </div>
+
+Note the `⸱` (U+2E31) replacing spaces in names—this prevents whitespace mangling in terminals and parsers while remaining visually scannable. Models read it as a space naturally.
 
 **Result:** 35% reduction, parsed correctly by Haiku with zero format explanation.
 
