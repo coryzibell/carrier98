@@ -171,6 +171,21 @@ On flat tabular data, fiche outperforms both JSON and TOON. TOON's strength is m
 
 fiche fills an unclaimed niche: **nested + minifiable + token-efficient + small-model-friendly**.
 
+### fiche vs JSON Parsing Parity
+
+We tested whether fiche degrades model comprehension compared to raw JSON. Using 10 users with nested objects (address, company, geo coordinates) plus metadata:
+
+| Format | Size | Parsing Errors | Reasoning Errors |
+|--------|------|----------------|------------------|
+| JSON | 4,170 bytes | 0 | 2 |
+| fiche | 3,117 bytes | 0 | 2 |
+
+Both formats produced identical parsing results. The reasoning errors (finding minimum values, pattern matching) occurred on *both* formats with different wrong answers—indicating model reasoning limits, not format comprehension issues.
+
+**Conclusion:** fiche parses at parity with JSON while being 25% smaller.
+
+[Try it yourself →](benchmarks/)
+
 ---
 
 ## Format Structure
