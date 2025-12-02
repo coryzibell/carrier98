@@ -205,6 +205,8 @@ carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 b
 
 **The trade-off:** Pay 1.5x bandwidth, get 31x context density.
 
+**Why this matters:** Bandwidth is cheap. LLM inference isn't. Every character the model parses costs compute. At 100KB, carrier98 saves the model from parsing 237,196 characters of JSON syntax - all those braces, quotes, colons, and commas. That's compute you're not paying for.
+
 ---
 
 ## Limitations
