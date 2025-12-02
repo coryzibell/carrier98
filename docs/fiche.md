@@ -14,7 +14,7 @@ title: fiche
     </div>
     <div class="meta-field">
       <span class="meta-label">Revision</span>
-      <span class="meta-value">1.2</span>
+      <span class="meta-value">1.3</span>
     </div>
     <div class="meta-field">
       <span class="meta-label">Status</span>
@@ -62,6 +62,8 @@ fiche follows this principle: **one document, two readers.**
 | `①②③...` | U+2460+ | Circled numbers | Nested depth levels |
 | `∅` | U+2205 | Empty set | Null value |
 | `▓` | U+2593 | Dark shade | Minified space |
+| `[` `]` | U+005B U+005D | Square brackets | Metadata annotation |
+| `,` `=` | U+002C U+003D | Comma, equals | Metadata key-value pairs |
 
 These characters were chosen for:
 - **Rarity**: Almost never appear in real data
@@ -195,6 +197,40 @@ The schema line begins with `@`, optionally followed by a root key (the JSON wra
 ```
 
 Each row begins with `◉`, followed by values in schema order, separated by `┃`.
+
+### Header Metadata
+
+When JSON has scalar fields alongside an array, fiche extracts them as header metadata:
+
+```
+@{root_key}[{key}={value},{key}={value}]┃{field}:{type}...
+```
+
+<div class="readout">
+  <span class="readout-label">API RESPONSE WITH METADATA</span>
+@students[class=Year▓1,school_name=Springfield▓High]┃id:str┃name:str┃grade:int▓◉A1┃alice┃95▓◉B2┃bob┃87▓◉C3┃carol┃92
+</div>
+
+**Equivalent JSON:**
+```json
+{
+  "school_name": "Springfield High",
+  "class": "Year 1",
+  "students": [
+    {"id": "A1", "name": "alice", "grade": 95},
+    {"id": "B2", "name": "bob", "grade": 87},
+    {"id": "C3", "name": "carol", "grade": 92}
+  ]
+}
+```
+
+**Rules:**
+- Metadata keys are bare (no spaces)
+- Metadata values use `▓` for spaces
+- Keys sorted alphabetically for deterministic output
+- Only extracted when JSON has scalar fields + exactly one array of objects
+
+This pattern is common in API responses (`{count, next, results: [...]}`) where pagination or context metadata wraps the main data.
 
 ---
 
