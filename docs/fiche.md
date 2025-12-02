@@ -69,6 +69,8 @@ These characters were chosen for:
 - **Visibility**: Distinct at a glance
 - **Single-token**: Most tokenizers encode each as one unit
 
+> **Note on the field separator:** The heavy vertical `┃` (U+2503) is *not* the standard pipe `|` (U+007C). Compare them side by side: `┃` vs `|`. The heavy vertical is thicker and extends the full line height. This distinction matters—the standard pipe appears frequently in code and shell commands, while the heavy vertical is rare enough to serve as an unambiguous delimiter.
+
 ---
 
 ## Format Structure
