@@ -240,6 +240,28 @@ carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 b
 
 **The economics:** JSON parsing on a CPU is essentially free - deterministic, fast, measured in microseconds. LLM inference is expensive - probabilistic, slow, measured in dollars per million tokens. carrier98 moves the parsing cost from expensive (model) to cheap (client CPU). Even if bandwidth is your bottleneck, you're still saving on the expensive side of the equation.
 
+### carrier98 vs TOON
+
+[TOON](https://github.com/mxdvl/toon) and carrier98 solve different problems:
+
+| Format | Model Parses | Model Understands | Optimized For |
+|--------|--------------|-------------------|---------------|
+| JSON | Every token | Yes | Human readability |
+| TOON | Fewer delimiters | Yes | Model readability |
+| carrier98 | Nothing | No (opaque) | Model carrying data |
+
+**TOON** reduces syntax overhead while keeping data model-readable. The model still parses and understands the structure.
+
+**carrier98** makes data opaque. The model recognizes the hieroglyph frame and shuttles the payload without parsing it. A CPU decodes on the other end.
+
+They're complementary. You could pipeline them:
+
+```
+JSON → carrier98 (transit) → TOON (model reads) → carrier98 (transit) → JSON
+```
+
+The model works in TOON, the wire uses carrier98. Best of both.
+
 ---
 
 ## Limitations
