@@ -240,27 +240,97 @@ carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 b
 
 **The economics:** JSON parsing on a CPU is essentially free - deterministic, fast, measured in microseconds. LLM inference is expensive - probabilistic, slow, measured in dollars per million tokens. carrier98 moves the parsing cost from expensive (model) to cheap (client CPU). Even if bandwidth is your bottleneck, you're still saving on the expensive side of the equation.
 
-### carrier98 vs TOON
-
-[TOON](https://github.com/mxdvl/toon) and carrier98 solve different problems:
+### The Format Family
 
 | Format | Model Parses | Model Understands | Optimized For |
 |--------|--------------|-------------------|---------------|
 | JSON | Every token | Yes | Human readability |
 | TOON | Fewer delimiters | Yes | Model readability |
-| carrier98 | Nothing | No (opaque) | Model carrying data |
+| **fiche** | Minimal delimiters | Yes | Model efficiency |
+| **carrier98** | Nothing | No (opaque) | Model carrying data |
 
-**TOON** reduces syntax overhead while keeping data model-readable. The model still parses and understands the structure.
+**carrier98** and **fiche** are siblings:
 
-**carrier98** makes data opaque. The model recognizes the hieroglyph frame and shuttles the payload without parsing it. A CPU decodes on the other end.
+- **carrier98** = the signal. Opaque binary wrapped in hieroglyphs. Maximum density. The model shuttles it without parsing.
+- **fiche** = the tape. Model-readable structured data with Unicode delimiters. The model can parse and operate on it.
 
-They're complementary. You could pipeline them:
+Like microfiche from the 90s - dense data on film, insert to retrieve. fiche is the tape format for the new era.
+
+---
+
+## fiche Format
+
+A model-readable structured data format. Uses rare Unicode delimiters so models parse structure with minimal tokens. No escaping needed - quotes, braces, newlines are just content.
+
+### Delimiters
+
+| Symbol | Unicode | Purpose |
+|--------|---------|---------|
+| `◉` | U+25C9 | Row start (fisheye) |
+| `┃` | U+2503 | Field separator (heavy pipe) |
+| `◈` | U+25C8 | Array element separator |
+| `∅` | U+2205 | Null value |
+
+### Schema Declaration
 
 ```
-JSON → carrier98 (transit) → TOON (model reads) → carrier98 (transit) → JSON
+@{root}┃{field}:{type}┃{field}:{type}...
 ```
 
-The model works in TOON, the wire uses carrier98. Best of both.
+**Types:** `int`, `str`, `float`, `bool`, `str[]`, `int[]`
+
+### Example
+
+```
+@users┃id:int┃name:str┃active:bool
+◉1┃alice┃true
+◉2┃bob┃false
+◉3┃carol┃true
+```
+
+### With Arrays
+
+```
+@users┃id:int┃tags:str[]
+◉1┃admin◈editor◈superuser
+◉2┃viewer
+```
+
+### With Nulls
+
+```
+@records┃id:int┃score:float┃notes:str
+◉1┃95.5┃∅
+◉2┃∅┃pending
+```
+
+### Embedded Content (no escaping)
+
+```
+@logs┃level:str┃msg:str
+◉error┃Failed to parse {"key": "value"}
+```
+
+Quotes, braces, colons - all just content. The `┃` delimiter is rare enough that collisions are virtually nonexistent.
+
+### Escape Hatch
+
+If content contains a delimiter (extremely rare), wrap in carrier98:
+
+```
+@art┃name:str┃chars:str
+◉gradient┃𓍹╣◟╥◕◝▰◣◥▟𓍺
+```
+
+The hieroglyph frame signals "decode me first."
+
+### Pipeline
+
+```
+JSON → fiche (model workspace) → carrier98 (transit) → fiche → JSON
+```
+
+The model works in fiche, the wire uses carrier98. Best of both.
 
 ---
 
