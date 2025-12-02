@@ -23,7 +23,7 @@ The carrier wave carries the signal. Like DTMF tones encoding digits for telepho
 4. **Self-describing** - Schema embedded in the payload
 5. **Dense** - Smaller than JSON, smaller than TOON
 
-> *"The code of the Matrix isn't English - it's too dense. But a human can see patterns."*
+> *"The image translators work for the construct program - but there's way too much information to decode the Matrix. I don't even see the code. All I see is blonde, brunette, redhead."*
 
 ---
 
