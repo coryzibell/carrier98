@@ -59,6 +59,7 @@ fiche follows this principle: **one document, two readers.**
 | `◉` | U+25C9 | Fisheye | Row start marker |
 | `┃` | U+2503 | Heavy vertical | Field separator |
 | `჻` | U+10FB | Georgian comma | Nested path separator |
+| `◈` | U+25C8 | Diamond in diamond | Primitive array element separator |
 | `∅` | U+2205 | Empty set | Null value |
 | `▓` | U+2593 | Dark shade | Minified space |
 | `⟦` `⟧` | U+27E6 U+27E7 | Mathematical brackets | Array type markers |
@@ -77,13 +78,14 @@ These characters were chosen for:
 
 fiche handles nested structures and arrays by flattening them into indexed paths using the Georgian comma `჻` as the path separator.
 
-### Simple Arrays
+### Primitive Arrays (Inline)
 
-Arrays are flattened to indexed paths:
+Arrays of primitives (strings, numbers, booleans) use the diamond separator `◈` for compact inline representation:
 
 <div class="readout">
-  <span class="readout-label">SIMPLE ARRAY</span>
-@┃tags჻0:str┃tags჻1:str┃tags჻2:str┃tags⟦⟧:str▓◉music┃80s┃classic┃∅
+  <span class="readout-label">PRIMITIVE ARRAY</span>
+@┃tags:str⟦⟧
+◉music◈80s◈classic
 </div>
 
 **Equivalent JSON:**
@@ -93,15 +95,16 @@ Arrays are flattened to indexed paths:
 }
 ```
 
-The `tags⟦⟧:str` field with value `∅` is a metadata marker indicating that `tags` is an array. This allows the decoder to reconstruct the original array structure with full fidelity.
+The `tags:str⟦⟧` schema declares an array of strings. Values are joined with `◈`. This is more compact than indexed paths for primitive arrays.
 
-### Nested Objects with Arrays
+### Arrays of Objects (Indexed Paths)
 
-Complex nested structures flatten naturally:
+Arrays containing objects use indexed paths with the Georgian comma `჻`:
 
 <div class="readout">
-  <span class="readout-label">NESTED WITH ARRAYS</span>
-@┃video჻id:str┃video჻title:str┃tags჻0:str┃tags჻1:str┃comments჻0჻author:str┃comments჻0჻text:str┃tags⟦⟧:str┃comments⟦⟧:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music┃80s┃alice┃Great!┃∅┃∅
+  <span class="readout-label">ARRAY OF OBJECTS</span>
+@┃video჻id:str┃video჻title:str┃tags:str⟦⟧┃comments჻0჻author:str┃comments჻0჻text:str┃comments⟦⟧:str
+◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s┃alice┃Great!┃∅
 </div>
 
 **Equivalent JSON:**
@@ -195,8 +198,8 @@ Copy this fiche data and paste it to any LLM with the questions below. No format
 
 <div class="readout">
   <span class="readout-label">COPY THIS</span>
-@┃org჻name:str┃org჻founded:int┃teams჻0჻name:str┃teams჻0჻lead:str┃teams჻0჻members჻0჻name:str┃teams჻0჻members჻0჻skills჻0:str┃teams჻0჻members჻0჻skills჻1:str┃teams჻0჻members჻1჻name:str┃teams჻0჻members჻1჻skills჻0:str┃teams჻1჻name:str┃teams჻1჻lead:str┃teams჻1჻members჻0჻name:str┃teams჻1჻members჻0჻skills჻0:str┃teams჻1჻members჻0჻skills჻1:str┃teams჻1჻members჻0჻skills჻2:str┃teams⟦⟧:str┃teams჻0჻members⟦⟧:str┃teams჻0჻members჻0჻skills⟦⟧:str┃teams჻0჻members჻1჻skills⟦⟧:str┃teams჻1჻members⟦⟧:str┃teams჻1჻members჻0჻skills⟦⟧:str
-◉Acme▓Corp┃2019┃Engineering┃alice┃bob┃rust┃python┃carol┃go┃Design┃dave┃eve┃figma┃css┃animation┃∅┃∅┃∅┃∅┃∅┃∅
+@┃org჻founded:int┃org჻name:str┃teams჻0჻lead:str┃teams჻0჻members჻0჻name:str┃teams჻0჻members჻0჻skills:str⟦⟧┃teams჻0჻members჻1჻name:str┃teams჻0჻members჻1჻skills:str⟦⟧┃teams჻0჻name:str┃teams჻1჻lead:str┃teams჻1჻members჻0჻name:str┃teams჻1჻members჻0჻skills:str⟦⟧┃teams჻1჻name:str┃teams⟦⟧:str┃teams჻0჻members⟦⟧:str┃teams჻1჻members⟦⟧:str
+◉2019┃Acme▓Corp┃alice┃bob┃rust◈python┃carol┃go┃Engineering┃dave┃eve┃figma◈css◈animation┃Design┃∅┃∅┃∅
 
 Questions:
 1. What skills does bob have?
@@ -219,21 +222,21 @@ If your model answers correctly with zero prompting about the format, fiche work
 
 > **Note on size:** For single complex records, fiche's schema overhead can exceed JSON. The savings come with multiple rows of similar structure—see [Context Efficiency](#context-efficiency) for benchmarks showing 30-50% reduction on typical datasets.
 
-### Why Path Flattening?
+### Why This Hybrid Approach?
 
-We tested multiple approaches for nesting:
+fiche uses two strategies for arrays:
 
-| Approach | Example | Token Efficiency | Decoder Complexity |
-|----------|---------|------------------|-------------------|
-| Circled numbers (legacy) | `◈music◈80s◈classic` | Good | High (ambiguous depth) |
-| Path flattening | `tags჻0:str┃tags჻1:str` | Better | Low (explicit structure) |
+| Array Type | Strategy | Example |
+|------------|----------|---------|
+| Primitives | Inline with `◈` | `tags:str⟦⟧` → `music◈80s◈classic` |
+| Objects | Indexed paths | `comments჻0჻author:str` → indexed fields |
 
-**Path flattening won because:**
-- Explicit structure—no ambiguity about nesting levels
+**Benefits:**
+- Primitive arrays are compact—no schema bloat for simple lists
+- Object arrays have explicit structure—no ambiguity about nesting levels
 - Paths are self-documenting (`comments჻0჻replies჻1` reads naturally)
-- Array boundaries are clear from path prefixes
-- Works identically for nested objects and nested arrays
-- Single token for separator (Georgian comma `჻` is rare in content)
+- Array boundaries are clear from path prefixes or `⟦⟧` markers
+- Single token for each separator (Georgian comma `჻` and diamond `◈` are rare in content)
 
 > **Note:** The Georgian comma `჻` (U+10FB) was chosen for its visibility and rarity. It's distinct at a glance and almost never appears in real data.
 
