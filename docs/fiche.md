@@ -14,7 +14,7 @@ title: fiche
     </div>
     <div class="meta-field">
       <span class="meta-label">Revision</span>
-      <span class="meta-value">1.5</span>
+      <span class="meta-value">1.6</span>
     </div>
     <div class="meta-field">
       <span class="meta-label">Status</span>
@@ -64,6 +64,17 @@ fiche follows this principle: **one document, two readers.**
 | `▓` | U+2593 | Dark shade | Minified space |
 | `⟦` `⟧` | U+27E6 U+27E7 | Mathematical brackets | Array type markers |
 | `,` `=` | U+002C U+003D | Comma, equals | Metadata key-value pairs |
+
+**Type markers** (superscript, single character):
+
+| Symbol | Unicode | Type |
+|--------|---------|------|
+| `ˢ` | U+02E2 | string |
+| `ⁱ` | U+2071 | integer |
+| `ᶠ` | U+1DA0 | float |
+| `ᵇ` | U+1D47 | boolean |
+
+Type markers replace the verbose `:str`, `:int`, `:float`, `:bool` annotations. Example: `nameˢ` instead of `name:str`.
 
 These characters were chosen for:
 - **Rarity**: Almost never appear in real data
@@ -218,12 +229,12 @@ If your model answers correctly with zero prompting about the format, fiche work
 
 ### Try It Yourself: Tokenized Version
 
-Same test, but with field names tokenized to runic characters. The token map is in the first line. Can your model still parse it cold?
+Same test, but with field names tokenized to runic characters and superscript type markers. The token map is in the first line. Can your model still parse it cold?
 
 <div class="readout">
   <span class="readout-label">COPY THIS (TOKENIZED)</span>
 @ᚠ=org,ᚡ=founded,ᚢ=name,ᚣ=teams,ᚤ=lead,ᚥ=members,ᚦ=skills
-ᚠ჻ᚡ:int┃ᚠ჻ᚢ:str┃ᚣ჻0჻ᚤ:str┃ᚣ჻0჻ᚥ჻0჻ᚢ:str┃ᚣ჻0჻ᚥ჻0჻ᚦ:str⟦⟧┃ᚣ჻0჻ᚥ჻1჻ᚢ:str┃ᚣ჻0჻ᚥ჻1჻ᚦ:str⟦⟧┃ᚣ჻0჻ᚢ:str┃ᚣ჻1჻ᚤ:str┃ᚣ჻1჻ᚥ჻0჻ᚢ:str┃ᚣ჻1჻ᚥ჻0჻ᚦ:str⟦⟧┃ᚣ჻1჻ᚢ:str┃ᚣ⟦⟧:str┃ᚣ჻0჻ᚥ⟦⟧:str┃ᚣ჻1჻ᚥ⟦⟧:str
+ᚠ჻ᚡⁱ┃ᚠ჻ᚢˢ┃ᚣ჻0჻ᚤˢ┃ᚣ჻0჻ᚥ჻0჻ᚢˢ┃ᚣ჻0჻ᚥ჻0჻ᚦˢ⟦⟧┃ᚣ჻0჻ᚥ჻1჻ᚢˢ┃ᚣ჻0჻ᚥ჻1჻ᚦˢ⟦⟧┃ᚣ჻0჻ᚢˢ┃ᚣ჻1჻ᚤˢ┃ᚣ჻1჻ᚥ჻0჻ᚢˢ┃ᚣ჻1჻ᚥ჻0჻ᚦˢ⟦⟧┃ᚣ჻1჻ᚢˢ┃ᚣ⟦⟧ˢ┃ᚣ჻0჻ᚥ⟦⟧ˢ┃ᚣ჻1჻ᚥ⟦⟧ˢ
 ◉2019┃Acme▓Corp┃alice┃bob┃rust◈python┃carol┃go┃Engineering┃dave┃eve┃figma◈css◈animation┃Design┃∅┃∅┃∅
 
 Questions:
@@ -289,23 +300,23 @@ The schema line includes a token map in the metadata section:
 
 ```
 @ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=comments,ᚤ=author,ᚥ=text,ᚦ=replies
-ᚠ჻ᚡ:str┃ᚠ჻ᚢ:str┃ᚣ჻0჻ᚤ:str┃ᚣ჻0჻ᚥ:str┃ᚣ჻0჻ᚦ჻0჻ᚤ:str┃...
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚣ჻0჻ᚤˢ┃ᚣ჻0჻ᚥˢ┃ᚣ჻0჻ᚦ჻0჻ᚤˢ┃...
 ```
 
-**Format:** `@` followed by comma-separated `token=fieldname` pairs, then the schema fields.
+**Format:** `@` followed by comma-separated `token=fieldname` pairs, then the schema fields with superscript type markers.
 
 ### Example: Tokenized vs Untokenized
 
 **Untokenized (readable):**
 ```
-@┃video჻id:str┃video჻title:str┃comments჻0჻author:str┃comments჻0჻text:str
+@┃video჻idˢ┃video჻titleˢ┃comments჻0჻authorˢ┃comments჻0჻textˢ
 ◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃alice┃Classic!
 ```
 
 **Tokenized (compact):**
 ```
 @ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=comments,ᚤ=author,ᚥ=text
-ᚠ჻ᚡ:str┃ᚠ჻ᚢ:str┃ᚣ჻0჻ᚤ:str┃ᚣ჻0჻ᚥ:str
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚣ჻0჻ᚤˢ┃ᚣ჻0჻ᚥˢ
 ◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃alice┃Classic!
 ```
 
