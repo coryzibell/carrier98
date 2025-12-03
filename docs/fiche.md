@@ -14,7 +14,7 @@ title: fiche
     </div>
     <div class="meta-field">
       <span class="meta-label">Revision</span>
-      <span class="meta-value">1.3</span>
+      <span class="meta-value">1.4</span>
     </div>
     <div class="meta-field">
       <span class="meta-label">Status</span>
@@ -31,7 +31,7 @@ Named for microfiche: data compressed onto film, readable by machine and eye ali
 
 <div class="readout">
   <span class="readout-label">EXAMPLE OUTPUT</span>
-@users┃id:int┃name:str┃active:bool▓◉1┃alice┃true▓◉2┃bob┃false▓◉3┃carol┃true
+@┃video჻id:str┃video჻title:str┃tags჻0:str┃tags჻1:str┃tags[]:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music┃80s┃∅
 </div>
 
 ---
@@ -58,11 +58,10 @@ fiche follows this principle: **one document, two readers.**
 | `@` | U+0040 | At sign | Schema line start |
 | `◉` | U+25C9 | Fisheye | Row start marker |
 | `┃` | U+2503 | Heavy vertical | Field separator |
-| `◈` | U+25C8 | White diamond containing black | Array element separator (flat) |
-| `①②③...` | U+2460+ | Circled numbers | Nested depth levels |
+| `჻` | U+10FB | Georgian comma | Nested path separator |
 | `∅` | U+2205 | Empty set | Null value |
 | `▓` | U+2593 | Dark shade | Minified space |
-| `[` `]` | U+005B U+005D | Square brackets | Metadata annotation |
+| `[` `]` | U+005B U+005D | Square brackets | Array type markers |
 | `,` `=` | U+002C U+003D | Comma, equals | Metadata key-value pairs |
 
 These characters were chosen for:
@@ -74,48 +73,91 @@ These characters were chosen for:
 
 ---
 
-## Nesting with Circled Numbers
+## Array Flattening
 
-fiche handles nested data using circled number delimiters. Each number represents a depth level:
+fiche handles nested structures and arrays by flattening them into indexed paths using the Georgian comma `჻` as the path separator.
 
-<div class="readout">
-  <span class="readout-label">NESTED STRUCTURE</span>
-@people┃name:str┃height:str┃films:@▓◉Luke▓Skywalker┃172①A▓New▓Hope①Empire▓Strikes▓Back▓◉C-3PO┃167①A▓New▓Hope
-</div>
+### Simple Arrays
 
-**Depth markers:**
-- `◉` — Root record (depth 0)
-- `①` — First nesting level
-- `②` — Second nesting level
-- `③④⑤...` — Deeper levels as needed
-
-Unicode provides circled numbers ①-⑳ (1-20), with extended ranges ㉑-㊿ (21-50) for deeper structures.
-
-### Multi-Level Nesting
+Arrays are flattened to indexed paths:
 
 <div class="readout">
-  <span class="readout-label">TWO-LEVEL NESTING</span>
-@films┃title:str┃director:str┃characters:@▓◉A▓New▓Hope┃George▓Lucas①Luke▓Skywalker②Tatooine②Jedi①Leia▓Organa②Alderaan②Rebel▓Leader▓◉Empire▓Strikes▓Back┃Irvin▓Kershner①Luke▓Skywalker②Dagobah②Jedi
+  <span class="readout-label">SIMPLE ARRAY</span>
+@┃tags჻0:str┃tags჻1:str┃tags჻2:str┃tags[]:str▓◉music┃80s┃classic┃∅
 </div>
 
-The structure reads naturally: characters (`①`) belong to films, attributes (`②`) belong to characters.
+**Equivalent JSON:**
+```json
+{
+  "tags": ["music", "80s", "classic"]
+}
+```
 
-### Why Circled Numbers?
+The `tags[]:str` field with value `∅` is a metadata marker indicating that `tags` is an array. This allows the decoder to reconstruct the original array structure with full fidelity.
+
+### Nested Objects with Arrays
+
+Complex nested structures flatten naturally:
+
+<div class="readout">
+  <span class="readout-label">NESTED WITH ARRAYS</span>
+@┃video჻id:str┃video჻title:str┃tags჻0:str┃tags჻1:str┃comments჻0჻author:str┃comments჻0჻text:str┃tags[]:str┃comments[]:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music┃80s┃alice┃Great!┃∅┃∅
+</div>
+
+**Equivalent JSON:**
+```json
+{
+  "video": {
+    "id": "dQw4w9WgXcQ",
+    "title": "Never Gonna Give You Up"
+  },
+  "tags": ["music", "80s"],
+  "comments": [
+    {
+      "author": "alice",
+      "text": "Great!"
+    }
+  ]
+}
+```
+
+### Nested Arrays
+
+Arrays within arrays work naturally:
+
+<div class="readout">
+  <span class="readout-label">NESTED ARRAYS</span>
+@┃comments჻0჻replies჻0჻author:str┃comments჻0჻replies჻1჻author:str┃comments჻1჻replies჻0჻author:str┃comments[]:str┃comments჻0჻replies[]:str┃comments჻1჻replies[]:str▓◉alice┃bob┃carol┃∅┃∅┃∅
+</div>
+
+**Path syntax:**
+- `comments჻0` — First comment
+- `comments჻0჻replies჻0` — First reply to first comment
+- `comments჻0჻replies჻1` — Second reply to first comment
+
+**Array markers:**
+- `comments[]:str` — Top-level array marker
+- `comments჻0჻replies[]:str` — Nested array marker
+
+All array markers have `∅` values and exist solely for decoder metadata.
+
+### Why Path Flattening?
 
 We tested multiple approaches for nesting:
 
-| Approach | Example | Haiku | Sonnet |
-|----------|---------|-------|--------|
-| Repeated arrows | `↳↳↳` | ✗ Failed | ✓ Passed |
-| Circled numbers | `①②③` | ✓ Passed | ✓ Passed |
+| Approach | Example | Token Efficiency | Decoder Complexity |
+|----------|---------|------------------|-------------------|
+| Circled numbers (legacy) | `◈music◈80s◈classic` | Good | High (ambiguous depth) |
+| Path flattening | `tags჻0:str┃tags჻1:str` | Better | Low (explicit structure) |
 
-**Circled numbers won because:**
-- Semantic meaning is baked into the symbol (`②` *means* depth 2)
-- No counting required—models parse instantly
-- Single token per depth marker
-- Works on smaller, cheaper models (Haiku) without any format explanation
+**Path flattening won because:**
+- Explicit structure—no ambiguity about nesting levels
+- Paths are self-documenting (`comments჻0჻replies჻1` reads naturally)
+- Array boundaries are clear from path prefixes
+- Works identically for nested objects and nested arrays
+- Single token for separator (Georgian comma `჻` is rare in content)
 
-> **The test:** We gave Haiku raw fiche data with nested structures—no format explanation, no schema documentation. It parsed the data correctly on first attempt, even identifying relationships across nesting levels.
+> **Note:** The Georgian comma `჻` (U+10FB) was chosen for its visibility and rarity. It's distinct at a glance and almost never appears in real data.
 
 ---
 
@@ -141,10 +183,11 @@ We tested fiche with 10 complex retrieval questions including aggregations, sort
 - Distinguish significant whitespace from formatting
 - Parse collapsed/minified content (impossible with TOON)
 
-**fiche** uses explicit Unicode delimiters (`◉`, `┃`, `▓`, `①②③`). Models can:
+**fiche** uses explicit Unicode delimiters (`◉`, `┃`, `▓`, `჻`). Models can:
 - Count visible characters reliably
 - Parse structure without inferring from spacing
 - Handle minified single-string format identically to expanded
+- Follow explicit path-based nesting (`comments჻0჻replies჻1`)
 
 ### Token Efficiency Comparison
 
@@ -156,14 +199,14 @@ Using TOON's GitHub repos benchmark data (50 records):
 | TOON | ~8,744 | +29% worse |
 | fiche | 5,918 | **-12.4% better** |
 
-On flat tabular data, fiche outperforms both JSON and TOON. TOON's strength is mixed nested structures—but fiche handles those too with circled number depth markers.
+On flat tabular data, fiche outperforms both JSON and TOON. TOON's strength is mixed nested structures—but fiche handles those too with path flattening.
 
 ### The Full Picture
 
 | Capability | fiche | TOON |
 |------------|-------|------|
 | Flat tabular | -12% tokens | +6% overhead |
-| Nested structures | ✓ (①②③ depth) | ✓ (indentation) |
+| Nested structures | ✓ (path flattening) | ✓ (indentation) |
 | Deep nesting (5+ levels) | ✓ stable | degrades |
 | Minifiable | ✓ single string | ✗ whitespace required |
 | Haiku accuracy | 100% cold | 59.8% |
@@ -271,7 +314,7 @@ This pattern is common in API responses (`{count, next, results: [...]}`) where 
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@missions┃name:str┃crew:str[]▓◉Mercury-Atlas▓6┃Glenn▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins
+@┃missions჻name:str┃missions჻crew჻0:str┃missions჻crew჻1:str┃missions჻crew჻2:str┃missions[]:str┃missions჻crew[]:str▓◉Mercury-Atlas▓6┃Glenn┃∅┃∅┃∅┃∅▓◉Apollo▓11┃Armstrong┃Aldrin┃Collins┃∅┃∅
 </div>
 
 ### With Nulls
@@ -309,12 +352,12 @@ Tested against actual SWAPI data with nested arrays (films, vehicles, starships 
 
 <div class="readout">
   <span class="readout-label">SWAPI IN FICHE</span>
-@people┃name:str┃height:str┃mass:str┃films:@┃vehicles:@┃starships:@◉Luke▓Skywalker┃172┃77①film/1①film/2①film/3①film/6①vehicle/14①vehicle/30①starship/12①starship/22◉C-3PO┃167┃75①film/1①film/2①film/3①film/4①film/5①film/6∅∅◉Darth▓Vader┃202┃136①film/1①film/2①film/3①film/6∅①starship/13
+@┃people჻0჻name:str┃people჻0჻height:str┃people჻0჻films჻0:str┃people჻0჻films჻1:str┃people჻0჻vehicles჻0:str┃people჻1჻name:str┃people჻1჻films჻0:str┃people[]:str┃people჻0჻films[]:str┃people჻0჻vehicles[]:str┃people჻1჻films[]:str▓◉Luke▓Skywalker┃172┃film/1┃film/2┃vehicle/14┃C-3PO┃film/1┃∅┃∅┃∅┃∅
 </div>
 
 Note the `▓` (U+2593) replacing spaces in names—this prevents whitespace mangling in terminals and parsers while remaining visually distinct. Models read it as a space naturally.
 
-**Result:** 35% reduction, parsed correctly by Haiku with zero format explanation.
+**Result:** 35% reduction, parsed correctly by Haiku with zero format explanation. Path-based nesting makes relationships explicit.
 
 fiche achieves 30-50% context reduction over JSON for typical structured data. For maximum compression, use carrier98.
 
