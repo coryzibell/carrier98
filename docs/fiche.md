@@ -132,14 +132,14 @@ Arrays containing objects use indexed paths with the Georgian comma `჻`:
 <div class="readout">
   <span class="readout-label">ARRAY OF OBJECTS</span>
 @ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=tags,ᚤ=comments,ᚥ=author,ᚦ=text
-ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚣˢ⟦⟧┃ᚤ჻0჻ᚥˢ┃ᚤ჻0჻ᚦˢ┃ᚤ⟦⟧ˢ
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚣˢ⟦⟧┃ᚤ჻0჻ᚥˢ┃ᚤ჻0჻ᚦˢ┃ᚤ⟦⟧
 ◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s┃alice┃Great!┃∅
 </div>
 <details>
 <summary>Expanded</summary>
 
 ```
-@┃video჻idˢ┃video჻titleˢ┃tagsˢ⟦⟧┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments⟦⟧ˢ
+@┃video჻idˢ┃video჻titleˢ┃tagsˢ⟦⟧┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments⟦⟧
 ◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s┃alice┃Great!┃∅
 ```
 </details>
@@ -168,13 +168,13 @@ Arrays within arrays work naturally:
 <div class="readout">
   <span class="readout-label">NESTED ARRAYS</span>
 @ᚠ=comments,ᚡ=replies,ᚢ=author
-ᚠ჻0჻ᚡ჻0჻ᚢˢ┃ᚠ჻0჻ᚡ჻1჻ᚢˢ┃ᚠ჻1჻ᚡ჻0჻ᚢˢ┃ᚠ⟦⟧ˢ┃ᚠ჻0჻ᚡ⟦⟧ˢ┃ᚠ჻1჻ᚡ⟦⟧ˢ▓◉alice┃bob┃carol┃∅┃∅┃∅
+ᚠ჻0჻ᚡ჻0჻ᚢˢ┃ᚠ჻0჻ᚡ჻1჻ᚢˢ┃ᚠ჻1჻ᚡ჻0჻ᚢˢ┃ᚠ⟦⟧┃ᚠ჻0჻ᚡ⟦⟧┃ᚠ჻1჻ᚡ⟦⟧▓◉alice┃bob┃carol┃∅┃∅┃∅
 </div>
 <details>
 <summary>Expanded</summary>
 
 ```
-@┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻1჻replies჻0჻authorˢ┃comments⟦⟧ˢ┃comments჻0჻replies⟦⟧ˢ┃comments჻1჻replies⟦⟧ˢ▓◉alice┃bob┃carol┃∅┃∅┃∅
+@┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻1჻replies჻0჻authorˢ┃comments⟦⟧┃comments჻0჻replies⟦⟧┃comments჻1჻replies⟦⟧▓◉alice┃bob┃carol┃∅┃∅┃∅
 ```
 </details>
 
@@ -184,8 +184,8 @@ Arrays within arrays work naturally:
 - `comments჻0჻replies჻1` — Second reply to first comment
 
 **Array markers:**
-- `comments⟦⟧ˢ` — Top-level array marker
-- `comments჻0჻replies⟦⟧ˢ` — Nested array marker
+- `comments⟦⟧` — Top-level array marker
+- `comments჻0჻replies⟦⟧` — Nested array marker
 
 All array markers have `∅` values and exist solely for decoder metadata.
 
@@ -225,19 +225,19 @@ Real-world API responses often have deeply nested structures—arrays of objects
 <div class="readout">
   <span class="readout-label">DEEPLY NESTED STRUCTURE</span>
 @ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=views,ᚤ=comments,ᚥ=author,ᚦ=text,ᚧ=replies
-ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚠ჻ᚣⁱ┃ᚤ჻0჻ᚥˢ┃ᚤ჻0჻ᚦˢ┃ᚤ჻0჻ᚧ჻0჻ᚥˢ┃ᚤ჻0჻ᚧ჻0჻ᚦˢ┃ᚤ჻0჻ᚧ჻1჻ᚥˢ┃ᚤ჻0჻ᚧ჻1჻ᚦˢ┃ᚤ჻1჻ᚥˢ┃ᚤ჻1჻ᚦˢ┃ᚤ⟦⟧ˢ┃ᚤ჻0჻ᚧ⟦⟧ˢ┃ᚤ჻1჻ᚧ⟦⟧ˢ▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚠ჻ᚣⁱ┃ᚤ჻0჻ᚥˢ┃ᚤ჻0჻ᚦˢ┃ᚤ჻0჻ᚧ჻0჻ᚥˢ┃ᚤ჻0჻ᚧ჻0჻ᚦˢ┃ᚤ჻0჻ᚧ჻1჻ᚥˢ┃ᚤ჻0჻ᚧ჻1჻ᚦˢ┃ᚤ჻1჻ᚥˢ┃ᚤ჻1჻ᚦˢ┃ᚤ⟦⟧┃ᚤ჻0჻ᚧ⟦⟧┃ᚤ჻1჻ᚧ⟦⟧▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
 </div>
 <details>
 <summary>Expanded</summary>
 
 ```
-@┃video჻idˢ┃video჻titleˢ┃video჻viewsⁱ┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻0჻textˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻0჻replies჻1჻textˢ┃comments჻1჻authorˢ┃comments჻1჻textˢ┃comments⟦⟧ˢ┃comments჻0჻replies⟦⟧ˢ┃comments჻1჻replies⟦⟧ˢ▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
+@┃video჻idˢ┃video჻titleˢ┃video჻viewsⁱ┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻0჻textˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻0჻replies჻1჻textˢ┃comments჻1჻authorˢ┃comments჻1჻textˢ┃comments⟦⟧┃comments჻0჻replies⟦⟧┃comments჻1჻replies⟦⟧▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
 ```
 </details>
 
 **Key observations:**
 - `comments჻0჻replies჻1჻author` — Four levels deep, completely unambiguous
-- `comments჻1჻replies⟦⟧ˢ` — Empty array preserved via marker
+- `comments჻1჻replies⟦⟧` — Empty array preserved via marker
 - Every path is explicit—no counting indentation or tracking state
 - **Round-trips perfectly**—decode produces identical JSON
 
@@ -251,7 +251,7 @@ Copy this fiche data and paste it to any LLM with the questions below. No format
 
 <div class="readout">
   <span class="readout-label">COPY THIS</span>
-@┃org჻foundedⁱ┃org჻nameˢ┃teams჻0჻leadˢ┃teams჻0჻members჻0჻nameˢ┃teams჻0჻members჻0჻skillsˢ⟦⟧┃teams჻0჻members჻1჻nameˢ┃teams჻0჻members჻1჻skillsˢ⟦⟧┃teams჻0჻nameˢ┃teams჻1჻leadˢ┃teams჻1჻members჻0჻nameˢ┃teams჻1჻members჻0჻skillsˢ⟦⟧┃teams჻1჻nameˢ┃teams⟦⟧ˢ┃teams჻0჻members⟦⟧ˢ┃teams჻1჻members⟦⟧ˢ
+@┃org჻foundedⁱ┃org჻nameˢ┃teams჻0჻leadˢ┃teams჻0჻members჻0჻nameˢ┃teams჻0჻members჻0჻skillsˢ⟦⟧┃teams჻0჻members჻1჻nameˢ┃teams჻0჻members჻1჻skillsˢ⟦⟧┃teams჻0჻nameˢ┃teams჻1჻leadˢ┃teams჻1჻members჻0჻nameˢ┃teams჻1჻members჻0჻skillsˢ⟦⟧┃teams჻1჻nameˢ┃teams⟦⟧┃teams჻0჻members⟦⟧┃teams჻1჻members⟦⟧
 ◉2019┃Acme▓Corp┃alice┃bob┃rust◈python┃carol┃go┃Engineering┃dave┃eve┃figma◈css◈animation┃Design┃∅┃∅┃∅
 
 Questions:
@@ -276,7 +276,7 @@ Same test, but with field names tokenized to runic characters and superscript ty
 <div class="readout">
   <span class="readout-label">COPY THIS (TOKENIZED)</span>
 @ᚠ=org,ᚡ=founded,ᚢ=name,ᚣ=teams,ᚤ=lead,ᚥ=members,ᚦ=skills
-ᚠ჻ᚡⁱ┃ᚠ჻ᚢˢ┃ᚣ჻0჻ᚤˢ┃ᚣ჻0჻ᚥ჻0჻ᚢˢ┃ᚣ჻0჻ᚥ჻0჻ᚦˢ⟦⟧┃ᚣ჻0჻ᚥ჻1჻ᚢˢ┃ᚣ჻0჻ᚥ჻1჻ᚦˢ⟦⟧┃ᚣ჻0჻ᚢˢ┃ᚣ჻1჻ᚤˢ┃ᚣ჻1჻ᚥ჻0჻ᚢˢ┃ᚣ჻1჻ᚥ჻0჻ᚦˢ⟦⟧┃ᚣ჻1჻ᚢˢ┃ᚣ⟦⟧ˢ┃ᚣ჻0჻ᚥ⟦⟧ˢ┃ᚣ჻1჻ᚥ⟦⟧ˢ
+ᚠ჻ᚡⁱ┃ᚠ჻ᚢˢ┃ᚣ჻0჻ᚤˢ┃ᚣ჻0჻ᚥ჻0჻ᚢˢ┃ᚣ჻0჻ᚥ჻0჻ᚦˢ⟦⟧┃ᚣ჻0჻ᚥ჻1჻ᚢˢ┃ᚣ჻0჻ᚥ჻1჻ᚦˢ⟦⟧┃ᚣ჻0჻ᚢˢ┃ᚣ჻1჻ᚤˢ┃ᚣ჻1჻ᚥ჻0჻ᚢˢ┃ᚣ჻1჻ᚥ჻0჻ᚦˢ⟦⟧┃ᚣ჻1჻ᚢˢ┃ᚣ⟦⟧┃ᚣ჻0჻ᚥ⟦⟧┃ᚣ჻1჻ᚥ⟦⟧
 ◉2019┃Acme▓Corp┃alice┃bob┃rust◈python┃carol┃go┃Engineering┃dave┃eve┃figma◈css◈animation┃Design┃∅┃∅┃∅
 
 Questions:
@@ -579,13 +579,13 @@ This pattern is common in API responses (`{count, next, results: [...]}`) where 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
 @ᚠ=missions,ᚡ=name,ᚢ=crew
-ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ⟦⟧┃ᚠ⟦⟧ˢ▓◉Mercury-Atlas▓6┃Glenn┃∅▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins┃∅
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ⟦⟧┃ᚠ⟦⟧▓◉Mercury-Atlas▓6┃Glenn┃∅▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins┃∅
 </div>
 <details>
 <summary>Expanded</summary>
 
 ```
-@┃missions჻nameˢ┃missions჻crewˢ⟦⟧┃missions⟦⟧ˢ▓◉Mercury-Atlas▓6┃Glenn┃∅▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins┃∅
+@┃missions჻nameˢ┃missions჻crewˢ⟦⟧┃missions⟦⟧▓◉Mercury-Atlas▓6┃Glenn┃∅▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins┃∅
 ```
 </details>
 
@@ -641,13 +641,13 @@ Tested against actual SWAPI data with nested arrays (films, vehicles, starships 
 <div class="readout">
   <span class="readout-label">SWAPI IN FICHE</span>
 @ᚠ=people,ᚡ=name,ᚢ=height,ᚣ=films,ᚤ=vehicles
-ᚠ჻0჻ᚡˢ┃ᚠ჻0჻ᚢˢ┃ᚠ჻0჻ᚣˢ⟦⟧┃ᚠ჻0჻ᚤˢ⟦⟧┃ᚠ჻1჻ᚡˢ┃ᚠ჻1჻ᚣˢ⟦⟧┃ᚠ⟦⟧ˢ▓◉Luke▓Skywalker┃172┃film/1◈film/2┃vehicle/14┃C-3PO┃film/1┃∅
+ᚠ჻0჻ᚡˢ┃ᚠ჻0჻ᚢˢ┃ᚠ჻0჻ᚣˢ⟦⟧┃ᚠ჻0჻ᚤˢ⟦⟧┃ᚠ჻1჻ᚡˢ┃ᚠ჻1჻ᚣˢ⟦⟧┃ᚠ⟦⟧▓◉Luke▓Skywalker┃172┃film/1◈film/2┃vehicle/14┃C-3PO┃film/1┃∅
 </div>
 <details>
 <summary>Expanded</summary>
 
 ```
-@┃people჻0჻nameˢ┃people჻0჻heightˢ┃people჻0჻filmsˢ⟦⟧┃people჻0჻vehiclesˢ⟦⟧┃people჻1჻nameˢ┃people჻1჻filmsˢ⟦⟧┃people⟦⟧ˢ▓◉Luke▓Skywalker┃172┃film/1◈film/2┃vehicle/14┃C-3PO┃film/1┃∅
+@┃people჻0჻nameˢ┃people჻0჻heightˢ┃people჻0჻filmsˢ⟦⟧┃people჻0჻vehiclesˢ⟦⟧┃people჻1჻nameˢ┃people჻1჻filmsˢ⟦⟧┃people⟦⟧▓◉Luke▓Skywalker┃172┃film/1◈film/2┃vehicle/14┃C-3PO┃film/1┃∅
 ```
 </details>
 
