@@ -31,7 +31,7 @@ Named for microfiche: data compressed onto film, readable by machine and eye ali
 
 <div class="readout">
   <span class="readout-label">EXAMPLE OUTPUT</span>
-@┃video჻id:str┃video჻title:str┃tags჻0:str┃tags჻1:str┃tags⟦⟧:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music┃80s┃∅
+@┃video჻idˢ┃video჻titleˢ┃tagsˢ⟦⟧▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s
 </div>
 
 ---
@@ -95,7 +95,7 @@ Arrays of primitives (strings, numbers, booleans) use the diamond separator `◈
 
 <div class="readout">
   <span class="readout-label">PRIMITIVE ARRAY</span>
-@┃tags:str⟦⟧
+@┃tagsˢ⟦⟧
 ◉music◈80s◈classic
 </div>
 
@@ -106,7 +106,7 @@ Arrays of primitives (strings, numbers, booleans) use the diamond separator `◈
 }
 ```
 
-The `tags:str⟦⟧` schema declares an array of strings. Values are joined with `◈`. This is more compact than indexed paths for primitive arrays.
+The `tagsˢ⟦⟧` schema declares an array of strings. Values are joined with `◈`. This is more compact than indexed paths for primitive arrays.
 
 ### Arrays of Objects (Indexed Paths)
 
@@ -114,7 +114,7 @@ Arrays containing objects use indexed paths with the Georgian comma `჻`:
 
 <div class="readout">
   <span class="readout-label">ARRAY OF OBJECTS</span>
-@┃video჻id:str┃video჻title:str┃tags:str⟦⟧┃comments჻0჻author:str┃comments჻0჻text:str┃comments⟦⟧:str
+@┃video჻idˢ┃video჻titleˢ┃tagsˢ⟦⟧┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments⟦⟧ˢ
 ◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s┃alice┃Great!┃∅
 </div>
 
@@ -141,7 +141,7 @@ Arrays within arrays work naturally:
 
 <div class="readout">
   <span class="readout-label">NESTED ARRAYS</span>
-@┃comments჻0჻replies჻0჻author:str┃comments჻0჻replies჻1჻author:str┃comments჻1჻replies჻0჻author:str┃comments⟦⟧:str┃comments჻0჻replies⟦⟧:str┃comments჻1჻replies⟦⟧:str▓◉alice┃bob┃carol┃∅┃∅┃∅
+@┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻1჻replies჻0჻authorˢ┃comments⟦⟧ˢ┃comments჻0჻replies⟦⟧ˢ┃comments჻1჻replies⟦⟧ˢ▓◉alice┃bob┃carol┃∅┃∅┃∅
 </div>
 
 **Path syntax:**
@@ -150,8 +150,8 @@ Arrays within arrays work naturally:
 - `comments჻0჻replies჻1` — Second reply to first comment
 
 **Array markers:**
-- `comments⟦⟧:str` — Top-level array marker
-- `comments჻0჻replies⟦⟧:str` — Nested array marker
+- `comments⟦⟧ˢ` — Top-level array marker
+- `comments჻0჻replies⟦⟧ˢ` — Nested array marker
 
 All array markers have `∅` values and exist solely for decoder metadata.
 
@@ -190,12 +190,12 @@ Real-world API responses often have deeply nested structures—arrays of objects
 
 <div class="readout">
   <span class="readout-label">DEEPLY NESTED STRUCTURE</span>
-@┃video჻id:str┃video჻title:str┃video჻views:int┃comments჻0჻author:str┃comments჻0჻text:str┃comments჻0჻replies჻0჻author:str┃comments჻0჻replies჻0჻text:str┃comments჻0჻replies჻1჻author:str┃comments჻0჻replies჻1჻text:str┃comments჻1჻author:str┃comments჻1჻text:str┃comments⟦⟧:str┃comments჻0჻replies⟦⟧:str┃comments჻1჻replies⟦⟧:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
+@┃video჻idˢ┃video჻titleˢ┃video჻viewsⁱ┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻0჻textˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻0჻replies჻1჻textˢ┃comments჻1჻authorˢ┃comments჻1჻textˢ┃comments⟦⟧ˢ┃comments჻0჻replies⟦⟧ˢ┃comments჻1჻replies⟦⟧ˢ▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
 </div>
 
 **Key observations:**
 - `comments჻0჻replies჻1჻author` — Four levels deep, completely unambiguous
-- `comments჻1჻replies⟦⟧:str` — Empty array preserved via marker
+- `comments჻1჻replies⟦⟧ˢ` — Empty array preserved via marker
 - Every path is explicit—no counting indentation or tracking state
 - **Round-trips perfectly**—decode produces identical JSON
 
@@ -209,7 +209,7 @@ Copy this fiche data and paste it to any LLM with the questions below. No format
 
 <div class="readout">
   <span class="readout-label">COPY THIS</span>
-@┃org჻founded:int┃org჻name:str┃teams჻0჻lead:str┃teams჻0჻members჻0჻name:str┃teams჻0჻members჻0჻skills:str⟦⟧┃teams჻0჻members჻1჻name:str┃teams჻0჻members჻1჻skills:str⟦⟧┃teams჻0჻name:str┃teams჻1჻lead:str┃teams჻1჻members჻0჻name:str┃teams჻1჻members჻0჻skills:str⟦⟧┃teams჻1჻name:str┃teams⟦⟧:str┃teams჻0჻members⟦⟧:str┃teams჻1჻members⟦⟧:str
+@┃org჻foundedⁱ┃org჻nameˢ┃teams჻0჻leadˢ┃teams჻0჻members჻0჻nameˢ┃teams჻0჻members჻0჻skillsˢ⟦⟧┃teams჻0჻members჻1჻nameˢ┃teams჻0჻members჻1჻skillsˢ⟦⟧┃teams჻0჻nameˢ┃teams჻1჻leadˢ┃teams჻1჻members჻0჻nameˢ┃teams჻1჻members჻0჻skillsˢ⟦⟧┃teams჻1჻nameˢ┃teams⟦⟧ˢ┃teams჻0჻members⟦⟧ˢ┃teams჻1჻members⟦⟧ˢ
 ◉2019┃Acme▓Corp┃alice┃bob┃rust◈python┃carol┃go┃Engineering┃dave┃eve┃figma◈css◈animation┃Design┃∅┃∅┃∅
 
 Questions:
@@ -260,8 +260,8 @@ fiche uses two strategies for arrays:
 
 | Array Type | Strategy | Example |
 |------------|----------|---------|
-| Primitives | Inline with `◈` | `tags:str⟦⟧` → `music◈80s◈classic` |
-| Objects | Indexed paths | `comments჻0჻author:str` → indexed fields |
+| Primitives | Inline with `◈` | `tagsˢ⟦⟧` → `music◈80s◈classic` |
+| Objects | Indexed paths | `comments჻0჻authorˢ` → indexed fields |
 
 **Benefits:**
 - Primitive arrays are compact—no schema bloat for simple lists
@@ -467,12 +467,12 @@ Each row begins with `◉`, followed by values in schema order, separated by `�
 When JSON has scalar fields alongside an array, fiche extracts them as header metadata:
 
 ```
-@{root_key}[{key}={value},{key}={value}]┃{field}:{type}...
+@{root_key}[{key}={value},{key}={value}]┃{field}{type}...
 ```
 
 <div class="readout">
   <span class="readout-label">API RESPONSE WITH METADATA</span>
-@students[class=Year▓1,school_name=Springfield▓High]┃id:str┃name:str┃grade:int▓◉A1┃alice┃95▓◉B2┃bob┃87▓◉C3┃carol┃92
+@students[class=Year▓1,school_name=Springfield▓High]┃idˢ┃nameˢ┃gradeⁱ▓◉A1┃alice┃95▓◉B2┃bob┃87▓◉C3┃carol┃92
 </div>
 
 **Equivalent JSON:**
@@ -504,7 +504,7 @@ This pattern is common in API responses (`{count, next, results: [...]}`) where 
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@crew┃id:int┃name:str┃role:str▓◉1┃Glenn┃Pilot▓◉2┃Carpenter┃Pilot▓◉3┃Johnson┃Computer
+@crew┃idⁱ┃nameˢ┃roleˢ▓◉1┃Glenn┃Pilot▓◉2┃Carpenter┃Pilot▓◉3┃Johnson┃Computer
 </div>
 
 **Equivalent JSON:**
@@ -520,14 +520,14 @@ This pattern is common in API responses (`{count, next, results: [...]}`) where 
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@┃missions჻name:str┃missions჻crew჻0:str┃missions჻crew჻1:str┃missions჻crew჻2:str┃missions⟦⟧:str┃missions჻crew⟦⟧:str▓◉Mercury-Atlas▓6┃Glenn┃∅┃∅┃∅┃∅▓◉Apollo▓11┃Armstrong┃Aldrin┃Collins┃∅┃∅
+@┃missions჻nameˢ┃missions჻crewˢ⟦⟧┃missions⟦⟧ˢ▓◉Mercury-Atlas▓6┃Glenn┃∅▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins┃∅
 </div>
 
 ### With Nulls
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@telemetry┃timestamp:int┃altitude:float┃notes:str▓◉1621234567┃408.5┃∅▓◉1621234568┃∅┃Signal▓lost▓◉1621234569┃412.1┃Reacquired
+@telemetry┃timestampⁱ┃altitudeᶠ┃notesˢ▓◉1621234567┃408.5┃∅▓◉1621234568┃∅┃Signal▓lost▓◉1621234569┃412.1┃Reacquired
 </div>
 
 ### Embedded Content
@@ -536,7 +536,7 @@ fiche handles embedded JSON, code, or any content without escaping:
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@logs┃level:str┃message:str▓◉error┃Failed▓to▓parse▓{"key":▓"value"}▓◉info┃User▓said▓"hello,▓world"▓◉debug┃Multiline▓content▓works
+@logs┃levelˢ┃messageˢ▓◉error┃Failed▓to▓parse▓{"key":▓"value"}▓◉info┃User▓said▓"hello,▓world"▓◉debug┃Multiline▓content▓works
 </div>
 
 The heavy pipe `┃` delimiter is rare enough that typical content passes through unchanged.
@@ -558,7 +558,7 @@ Tested against actual SWAPI data with nested arrays (films, vehicles, starships 
 
 <div class="readout">
   <span class="readout-label">SWAPI IN FICHE</span>
-@┃people჻0჻name:str┃people჻0჻height:str┃people჻0჻films჻0:str┃people჻0჻films჻1:str┃people჻0჻vehicles჻0:str┃people჻1჻name:str┃people჻1჻films჻0:str┃people⟦⟧:str┃people჻0჻films⟦⟧:str┃people჻0჻vehicles⟦⟧:str┃people჻1჻films⟦⟧:str▓◉Luke▓Skywalker┃172┃film/1┃film/2┃vehicle/14┃C-3PO┃film/1┃∅┃∅┃∅┃∅
+@┃people჻0჻nameˢ┃people჻0჻heightˢ┃people჻0჻filmsˢ⟦⟧┃people჻0჻vehiclesˢ⟦⟧┃people჻1჻nameˢ┃people჻1჻filmsˢ⟦⟧┃people⟦⟧ˢ▓◉Luke▓Skywalker┃172┃film/1◈film/2┃vehicle/14┃C-3PO┃film/1┃∅
 </div>
 
 Note the `▓` (U+2593) replacing spaces in names—this prevents whitespace mangling in terminals and parsers while remaining visually distinct. Models read it as a space naturally.
@@ -611,7 +611,7 @@ echo '{"users":[{"id":1,"name":"alice"}]}' | base-d fiche
 echo '{"users":[{"id":1,"name":"alice"}]}' | base-d fiche -m
 
 # fiche → JSON (works with both formats)
-echo '@users┃id:int┃name:str▓◉1┃alice' | base-d fiche -d
+echo '@users┃idⁱ┃nameˢ▓◉1┃alice' | base-d fiche -d
 
 # Pretty-print JSON output
 base-d fiche -d -p < data.fiche
