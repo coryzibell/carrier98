@@ -214,7 +214,28 @@ Questions:
 3. 2 (bob and carol)
 4. animation
 
-If your model answers correctly with zero prompting about the format, fiche works for your use case. Here's the equivalent JSON for comparison—same data, same structure:
+If your model answers correctly with zero prompting about the format, fiche works for your use case.
+
+### Try It Yourself: Tokenized Version
+
+Same test, but with field names tokenized to runic characters. The token map is in the first line. Can your model still parse it cold?
+
+<div class="readout">
+  <span class="readout-label">COPY THIS (TOKENIZED)</span>
+@ᚠ=org,ᚡ=founded,ᚢ=name,ᚣ=teams,ᚤ=lead,ᚥ=members,ᚦ=skills
+ᚠ჻ᚡ:int┃ᚠ჻ᚢ:str┃ᚣ჻0჻ᚤ:str┃ᚣ჻0჻ᚥ჻0჻ᚢ:str┃ᚣ჻0჻ᚥ჻0჻ᚦ:str⟦⟧┃ᚣ჻0჻ᚥ჻1჻ᚢ:str┃ᚣ჻0჻ᚥ჻1჻ᚦ:str⟦⟧┃ᚣ჻0჻ᚢ:str┃ᚣ჻1჻ᚤ:str┃ᚣ჻1჻ᚥ჻0჻ᚢ:str┃ᚣ჻1჻ᚥ჻0჻ᚦ:str⟦⟧┃ᚣ჻1჻ᚢ:str┃ᚣ⟦⟧:str┃ᚣ჻0჻ᚥ⟦⟧:str┃ᚣ჻1჻ᚥ⟦⟧:str
+◉2019┃Acme▓Corp┃alice┃bob┃rust◈python┃carol┃go┃Engineering┃dave┃eve┃figma◈css◈animation┃Design┃∅┃∅┃∅
+
+Questions:
+1. What skills does bob have?
+2. Who leads the Design team?
+3. How many members are on the Engineering team?
+4. What is eve's third skill?
+</div>
+
+**Expected answers:** Same as above. If your model handles both versions identically, tokenization is safe for your use case.
+
+Here's the equivalent JSON for comparison—same data, same structure:
 
 ```json
 {"org":{"founded":2019,"name":"Acme Corp"},"teams":[{"lead":"alice","members":[{"name":"bob","skills":["rust","python"]},{"name":"carol","skills":["go"]}],"name":"Engineering"},{"lead":"dave","members":[{"name":"eve","skills":["figma","css","animation"]}],"name":"Design"}]}
