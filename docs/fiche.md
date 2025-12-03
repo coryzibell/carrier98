@@ -141,6 +141,54 @@ Arrays within arrays work naturally:
 
 All array markers have `∅` values and exist solely for decoder metadata.
 
+### Complex Nesting: Where fiche Shines
+
+Real-world API responses often have deeply nested structures—arrays of objects containing arrays of objects. This is where many formats fail. fiche handles it naturally.
+
+**Example: YouTube-style API response**
+
+```json
+{
+  "video": {
+    "id": "dQw4w9WgXcQ",
+    "title": "Never Gonna Give You Up",
+    "views": 1500000000
+  },
+  "comments": [
+    {
+      "author": "alice",
+      "text": "Classic!",
+      "replies": [
+        {"author": "bob", "text": "Agreed!"},
+        {"author": "carol", "text": "Never gets old"}
+      ]
+    },
+    {
+      "author": "dave",
+      "text": "Still watching in 2024",
+      "replies": []
+    }
+  ]
+}
+```
+
+**fiche output:**
+
+<div class="readout">
+  <span class="readout-label">DEEPLY NESTED STRUCTURE</span>
+@┃video჻id:str┃video჻title:str┃video჻views:int┃comments჻0჻author:str┃comments჻0჻text:str┃comments჻0჻replies჻0჻author:str┃comments჻0჻replies჻0჻text:str┃comments჻0჻replies჻1჻author:str┃comments჻0჻replies჻1჻text:str┃comments჻1჻author:str┃comments჻1჻text:str┃comments[]:str┃comments჻0჻replies[]:str┃comments჻1჻replies[]:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
+</div>
+
+**Key observations:**
+- `comments჻0჻replies჻1჻author` — Four levels deep, completely unambiguous
+- `comments჻1჻replies[]:str` — Empty array preserved via marker
+- Every path is explicit—no counting indentation or tracking state
+- **Round-trips perfectly**—decode produces identical JSON
+
+**Cold parse test:** We gave this to Haiku with zero format explanation and asked: *"Who replied to the first comment?"* Answer: *"bob and carol"*. Correct.
+
+This is the complexity level where whitespace-based formats break down. Fiche handles it because structure is encoded in the path, not inferred from layout.
+
 ### Why Path Flattening?
 
 We tested multiple approaches for nesting:
