@@ -14,7 +14,7 @@ title: fiche
     </div>
     <div class="meta-field">
       <span class="meta-label">Revision</span>
-      <span class="meta-value">1.6</span>
+      <span class="meta-value">1.7</span>
     </div>
     <div class="meta-field">
       <span class="meta-label">Status</span>
@@ -31,8 +31,16 @@ Named for microfiche: data compressed onto film, readable by machine and eye ali
 
 <div class="readout">
   <span class="readout-label">EXAMPLE OUTPUT</span>
-@┃video჻idˢ┃video჻titleˢ┃tagsˢ⟦⟧▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s
+@ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=tags
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚣˢ⟦⟧▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s
 </div>
+<details>
+<summary>Expanded (human-readable field names)</summary>
+
+```
+@┃video჻idˢ┃video჻titleˢ┃tagsˢ⟦⟧▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s
+```
+</details>
 
 ---
 
@@ -95,9 +103,18 @@ Arrays of primitives (strings, numbers, booleans) use the diamond separator `◈
 
 <div class="readout">
   <span class="readout-label">PRIMITIVE ARRAY</span>
-@┃tagsˢ⟦⟧
+@ᚠ=tags
+ᚠˢ⟦⟧
 ◉music◈80s◈classic
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@┃tagsˢ⟦⟧
+◉music◈80s◈classic
+```
+</details>
 
 **Equivalent JSON:**
 ```json
@@ -114,9 +131,18 @@ Arrays containing objects use indexed paths with the Georgian comma `჻`:
 
 <div class="readout">
   <span class="readout-label">ARRAY OF OBJECTS</span>
-@┃video჻idˢ┃video჻titleˢ┃tagsˢ⟦⟧┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments⟦⟧ˢ
+@ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=tags,ᚤ=comments,ᚥ=author,ᚦ=text
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚣˢ⟦⟧┃ᚤ჻0჻ᚥˢ┃ᚤ჻0჻ᚦˢ┃ᚤ⟦⟧ˢ
 ◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s┃alice┃Great!┃∅
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@┃video჻idˢ┃video჻titleˢ┃tagsˢ⟦⟧┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments⟦⟧ˢ
+◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music◈80s┃alice┃Great!┃∅
+```
+</details>
 
 **Equivalent JSON:**
 ```json
@@ -141,8 +167,16 @@ Arrays within arrays work naturally:
 
 <div class="readout">
   <span class="readout-label">NESTED ARRAYS</span>
-@┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻1჻replies჻0჻authorˢ┃comments⟦⟧ˢ┃comments჻0჻replies⟦⟧ˢ┃comments჻1჻replies⟦⟧ˢ▓◉alice┃bob┃carol┃∅┃∅┃∅
+@ᚠ=comments,ᚡ=replies,ᚢ=author
+ᚠ჻0჻ᚡ჻0჻ᚢˢ┃ᚠ჻0჻ᚡ჻1჻ᚢˢ┃ᚠ჻1჻ᚡ჻0჻ᚢˢ┃ᚠ⟦⟧ˢ┃ᚠ჻0჻ᚡ⟦⟧ˢ┃ᚠ჻1჻ᚡ⟦⟧ˢ▓◉alice┃bob┃carol┃∅┃∅┃∅
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻1჻replies჻0჻authorˢ┃comments⟦⟧ˢ┃comments჻0჻replies⟦⟧ˢ┃comments჻1჻replies⟦⟧ˢ▓◉alice┃bob┃carol┃∅┃∅┃∅
+```
+</details>
 
 **Path syntax:**
 - `comments჻0` — First comment
@@ -190,8 +224,16 @@ Real-world API responses often have deeply nested structures—arrays of objects
 
 <div class="readout">
   <span class="readout-label">DEEPLY NESTED STRUCTURE</span>
-@┃video჻idˢ┃video჻titleˢ┃video჻viewsⁱ┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻0჻textˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻0჻replies჻1჻textˢ┃comments჻1჻authorˢ┃comments჻1჻textˢ┃comments⟦⟧ˢ┃comments჻0჻replies⟦⟧ˢ┃comments჻1჻replies⟦⟧ˢ▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
+@ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=views,ᚤ=comments,ᚥ=author,ᚦ=text,ᚧ=replies
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ┃ᚠ჻ᚣⁱ┃ᚤ჻0჻ᚥˢ┃ᚤ჻0჻ᚦˢ┃ᚤ჻0჻ᚧ჻0჻ᚥˢ┃ᚤ჻0჻ᚧ჻0჻ᚦˢ┃ᚤ჻0჻ᚧ჻1჻ᚥˢ┃ᚤ჻0჻ᚧ჻1჻ᚦˢ┃ᚤ჻1჻ᚥˢ┃ᚤ჻1჻ᚦˢ┃ᚤ⟦⟧ˢ┃ᚤ჻0჻ᚧ⟦⟧ˢ┃ᚤ჻1჻ᚧ⟦⟧ˢ▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@┃video჻idˢ┃video჻titleˢ┃video჻viewsⁱ┃comments჻0჻authorˢ┃comments჻0჻textˢ┃comments჻0჻replies჻0჻authorˢ┃comments჻0჻replies჻0჻textˢ┃comments჻0჻replies჻1჻authorˢ┃comments჻0჻replies჻1჻textˢ┃comments჻1჻authorˢ┃comments჻1჻textˢ┃comments⟦⟧ˢ┃comments჻0჻replies⟦⟧ˢ┃comments჻1჻replies⟦⟧ˢ▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
+```
+</details>
 
 **Key observations:**
 - `comments჻0჻replies჻1჻author` — Four levels deep, completely unambiguous
@@ -472,8 +514,16 @@ When JSON has scalar fields alongside an array, fiche extracts them as header me
 
 <div class="readout">
   <span class="readout-label">API RESPONSE WITH METADATA</span>
-@students[class=Year▓1,school_name=Springfield▓High]┃idˢ┃nameˢ┃gradeⁱ▓◉A1┃alice┃95▓◉B2┃bob┃87▓◉C3┃carol┃92
+@ᚠ=students,ᚡ=id,ᚢ=name,ᚣ=grade
+ᚠ[class=Year▓1,school_name=Springfield▓High]┃ᚡˢ┃ᚢˢ┃ᚣⁱ▓◉A1┃alice┃95▓◉B2┃bob┃87▓◉C3┃carol┃92
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@students[class=Year▓1,school_name=Springfield▓High]┃idˢ┃nameˢ┃gradeⁱ▓◉A1┃alice┃95▓◉B2┃bob┃87▓◉C3┃carol┃92
+```
+</details>
 
 **Equivalent JSON:**
 ```json
@@ -504,8 +554,16 @@ This pattern is common in API responses (`{count, next, results: [...]}`) where 
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@crew┃idⁱ┃nameˢ┃roleˢ▓◉1┃Glenn┃Pilot▓◉2┃Carpenter┃Pilot▓◉3┃Johnson┃Computer
+@ᚠ=crew,ᚡ=id,ᚢ=name,ᚣ=role
+ᚠ┃ᚡⁱ┃ᚢˢ┃ᚣˢ▓◉1┃Glenn┃Pilot▓◉2┃Carpenter┃Pilot▓◉3┃Johnson┃Computer
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@crew┃idⁱ┃nameˢ┃roleˢ▓◉1┃Glenn┃Pilot▓◉2┃Carpenter┃Pilot▓◉3┃Johnson┃Computer
+```
+</details>
 
 **Equivalent JSON:**
 ```json
@@ -520,15 +578,31 @@ This pattern is common in API responses (`{count, next, results: [...]}`) where 
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@┃missions჻nameˢ┃missions჻crewˢ⟦⟧┃missions⟦⟧ˢ▓◉Mercury-Atlas▓6┃Glenn┃∅▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins┃∅
+@ᚠ=missions,ᚡ=name,ᚢ=crew
+ᚠ჻ᚡˢ┃ᚠ჻ᚢˢ⟦⟧┃ᚠ⟦⟧ˢ▓◉Mercury-Atlas▓6┃Glenn┃∅▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins┃∅
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@┃missions჻nameˢ┃missions჻crewˢ⟦⟧┃missions⟦⟧ˢ▓◉Mercury-Atlas▓6┃Glenn┃∅▓◉Apollo▓11┃Armstrong◈Aldrin◈Collins┃∅
+```
+</details>
 
 ### With Nulls
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@telemetry┃timestampⁱ┃altitudeᶠ┃notesˢ▓◉1621234567┃408.5┃∅▓◉1621234568┃∅┃Signal▓lost▓◉1621234569┃412.1┃Reacquired
+@ᚠ=telemetry,ᚡ=timestamp,ᚢ=altitude,ᚣ=notes
+ᚠ┃ᚡⁱ┃ᚢᶠ┃ᚣˢ▓◉1621234567┃408.5┃∅▓◉1621234568┃∅┃Signal▓lost▓◉1621234569┃412.1┃Reacquired
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@telemetry┃timestampⁱ┃altitudeᶠ┃notesˢ▓◉1621234567┃408.5┃∅▓◉1621234568┃∅┃Signal▓lost▓◉1621234569┃412.1┃Reacquired
+```
+</details>
 
 ### Embedded Content
 
@@ -536,8 +610,16 @@ fiche handles embedded JSON, code, or any content without escaping:
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@logs┃levelˢ┃messageˢ▓◉error┃Failed▓to▓parse▓{"key":▓"value"}▓◉info┃User▓said▓"hello,▓world"▓◉debug┃Multiline▓content▓works
+@ᚠ=logs,ᚡ=level,ᚢ=message
+ᚠ┃ᚡˢ┃ᚢˢ▓◉error┃Failed▓to▓parse▓{"key":▓"value"}▓◉info┃User▓said▓"hello,▓world"▓◉debug┃Multiline▓content▓works
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@logs┃levelˢ┃messageˢ▓◉error┃Failed▓to▓parse▓{"key":▓"value"}▓◉info┃User▓said▓"hello,▓world"▓◉debug┃Multiline▓content▓works
+```
+</details>
 
 The heavy pipe `┃` delimiter is rare enough that typical content passes through unchanged.
 
@@ -558,8 +640,16 @@ Tested against actual SWAPI data with nested arrays (films, vehicles, starships 
 
 <div class="readout">
   <span class="readout-label">SWAPI IN FICHE</span>
-@┃people჻0჻nameˢ┃people჻0჻heightˢ┃people჻0჻filmsˢ⟦⟧┃people჻0჻vehiclesˢ⟦⟧┃people჻1჻nameˢ┃people჻1჻filmsˢ⟦⟧┃people⟦⟧ˢ▓◉Luke▓Skywalker┃172┃film/1◈film/2┃vehicle/14┃C-3PO┃film/1┃∅
+@ᚠ=people,ᚡ=name,ᚢ=height,ᚣ=films,ᚤ=vehicles
+ᚠ჻0჻ᚡˢ┃ᚠ჻0჻ᚢˢ┃ᚠ჻0჻ᚣˢ⟦⟧┃ᚠ჻0჻ᚤˢ⟦⟧┃ᚠ჻1჻ᚡˢ┃ᚠ჻1჻ᚣˢ⟦⟧┃ᚠ⟦⟧ˢ▓◉Luke▓Skywalker┃172┃film/1◈film/2┃vehicle/14┃C-3PO┃film/1┃∅
 </div>
+<details>
+<summary>Expanded</summary>
+
+```
+@┃people჻0჻nameˢ┃people჻0჻heightˢ┃people჻0჻filmsˢ⟦⟧┃people჻0჻vehiclesˢ⟦⟧┃people჻1჻nameˢ┃people჻1჻filmsˢ⟦⟧┃people⟦⟧ˢ▓◉Luke▓Skywalker┃172┃film/1◈film/2┃vehicle/14┃C-3PO┃film/1┃∅
+```
+</details>
 
 Note the `▓` (U+2593) replacing spaces in names—this prevents whitespace mangling in terminals and parsers while remaining visually distinct. Models read it as a space naturally.
 
