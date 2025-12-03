@@ -31,7 +31,7 @@ Named for microfiche: data compressed onto film, readable by machine and eye ali
 
 <div class="readout">
   <span class="readout-label">EXAMPLE OUTPUT</span>
-@┃video჻id:str┃video჻title:str┃tags჻0:str┃tags჻1:str┃tags[]:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music┃80s┃∅
+@┃video჻id:str┃video჻title:str┃tags჻0:str┃tags჻1:str┃tags⟦⟧:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music┃80s┃∅
 </div>
 
 ---
@@ -61,7 +61,7 @@ fiche follows this principle: **one document, two readers.**
 | `჻` | U+10FB | Georgian comma | Nested path separator |
 | `∅` | U+2205 | Empty set | Null value |
 | `▓` | U+2593 | Dark shade | Minified space |
-| `[` `]` | U+005B U+005D | Square brackets | Array type markers |
+| `⟦` `⟧` | U+27E6 U+27E7 | Mathematical brackets | Array type markers |
 | `,` `=` | U+002C U+003D | Comma, equals | Metadata key-value pairs |
 
 These characters were chosen for:
@@ -83,7 +83,7 @@ Arrays are flattened to indexed paths:
 
 <div class="readout">
   <span class="readout-label">SIMPLE ARRAY</span>
-@┃tags჻0:str┃tags჻1:str┃tags჻2:str┃tags[]:str▓◉music┃80s┃classic┃∅
+@┃tags჻0:str┃tags჻1:str┃tags჻2:str┃tags⟦⟧:str▓◉music┃80s┃classic┃∅
 </div>
 
 **Equivalent JSON:**
@@ -93,7 +93,7 @@ Arrays are flattened to indexed paths:
 }
 ```
 
-The `tags[]:str` field with value `∅` is a metadata marker indicating that `tags` is an array. This allows the decoder to reconstruct the original array structure with full fidelity.
+The `tags⟦⟧:str` field with value `∅` is a metadata marker indicating that `tags` is an array. This allows the decoder to reconstruct the original array structure with full fidelity.
 
 ### Nested Objects with Arrays
 
@@ -101,7 +101,7 @@ Complex nested structures flatten naturally:
 
 <div class="readout">
   <span class="readout-label">NESTED WITH ARRAYS</span>
-@┃video჻id:str┃video჻title:str┃tags჻0:str┃tags჻1:str┃comments჻0჻author:str┃comments჻0჻text:str┃tags[]:str┃comments[]:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music┃80s┃alice┃Great!┃∅┃∅
+@┃video჻id:str┃video჻title:str┃tags჻0:str┃tags჻1:str┃comments჻0჻author:str┃comments჻0჻text:str┃tags⟦⟧:str┃comments⟦⟧:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃music┃80s┃alice┃Great!┃∅┃∅
 </div>
 
 **Equivalent JSON:**
@@ -127,7 +127,7 @@ Arrays within arrays work naturally:
 
 <div class="readout">
   <span class="readout-label">NESTED ARRAYS</span>
-@┃comments჻0჻replies჻0჻author:str┃comments჻0჻replies჻1჻author:str┃comments჻1჻replies჻0჻author:str┃comments[]:str┃comments჻0჻replies[]:str┃comments჻1჻replies[]:str▓◉alice┃bob┃carol┃∅┃∅┃∅
+@┃comments჻0჻replies჻0჻author:str┃comments჻0჻replies჻1჻author:str┃comments჻1჻replies჻0჻author:str┃comments⟦⟧:str┃comments჻0჻replies⟦⟧:str┃comments჻1჻replies⟦⟧:str▓◉alice┃bob┃carol┃∅┃∅┃∅
 </div>
 
 **Path syntax:**
@@ -136,8 +136,8 @@ Arrays within arrays work naturally:
 - `comments჻0჻replies჻1` — Second reply to first comment
 
 **Array markers:**
-- `comments[]:str` — Top-level array marker
-- `comments჻0჻replies[]:str` — Nested array marker
+- `comments⟦⟧:str` — Top-level array marker
+- `comments჻0჻replies⟦⟧:str` — Nested array marker
 
 All array markers have `∅` values and exist solely for decoder metadata.
 
@@ -166,7 +166,7 @@ Real-world API responses often have deeply nested structures—arrays of objects
     {
       "author": "dave",
       "text": "Still watching in 2024",
-      "replies": []
+      "replies": ⟦⟧
     }
   ]
 }
@@ -176,18 +176,42 @@ Real-world API responses often have deeply nested structures—arrays of objects
 
 <div class="readout">
   <span class="readout-label">DEEPLY NESTED STRUCTURE</span>
-@┃video჻id:str┃video჻title:str┃video჻views:int┃comments჻0჻author:str┃comments჻0჻text:str┃comments჻0჻replies჻0჻author:str┃comments჻0჻replies჻0჻text:str┃comments჻0჻replies჻1჻author:str┃comments჻0჻replies჻1჻text:str┃comments჻1჻author:str┃comments჻1჻text:str┃comments[]:str┃comments჻0჻replies[]:str┃comments჻1჻replies[]:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
+@┃video჻id:str┃video჻title:str┃video჻views:int┃comments჻0჻author:str┃comments჻0჻text:str┃comments჻0჻replies჻0჻author:str┃comments჻0჻replies჻0჻text:str┃comments჻0჻replies჻1჻author:str┃comments჻0჻replies჻1჻text:str┃comments჻1჻author:str┃comments჻1჻text:str┃comments⟦⟧:str┃comments჻0჻replies⟦⟧:str┃comments჻1჻replies⟦⟧:str▓◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃1500000000┃alice┃Classic!┃bob┃Agreed!┃carol┃Never▓gets▓old┃dave┃Still▓watching▓in▓2024┃∅┃∅┃∅
 </div>
 
 **Key observations:**
 - `comments჻0჻replies჻1჻author` — Four levels deep, completely unambiguous
-- `comments჻1჻replies[]:str` — Empty array preserved via marker
+- `comments჻1჻replies⟦⟧:str` — Empty array preserved via marker
 - Every path is explicit—no counting indentation or tracking state
 - **Round-trips perfectly**—decode produces identical JSON
 
 **Cold parse test:** We gave this to Haiku with zero format explanation and asked: *"Who replied to the first comment?"* Answer: *"bob and carol"*. Correct.
 
 This is the complexity level where whitespace-based formats break down. Fiche handles it because structure is encoded in the path, not inferred from layout.
+
+### Try It Yourself: Model Cold Parse Test
+
+Copy this fiche data and paste it to any LLM with the questions below. No format explanation needed.
+
+<div class="readout">
+  <span class="readout-label">COPY THIS</span>
+@┃org჻name:str┃org჻founded:int┃teams჻0჻name:str┃teams჻0჻lead:str┃teams჻0჻members჻0჻name:str┃teams჻0჻members჻0჻skills჻0:str┃teams჻0჻members჻0჻skills჻1:str┃teams჻0჻members჻1჻name:str┃teams჻0჻members჻1჻skills჻0:str┃teams჻1჻name:str┃teams჻1჻lead:str┃teams჻1჻members჻0჻name:str┃teams჻1჻members჻0჻skills჻0:str┃teams჻1჻members჻0჻skills჻1:str┃teams჻1჻members჻0჻skills჻2:str┃teams⟦⟧:str┃teams჻0჻members⟦⟧:str┃teams჻0჻members჻0჻skills⟦⟧:str┃teams჻0჻members჻1჻skills⟦⟧:str┃teams჻1჻members⟦⟧:str┃teams჻1჻members჻0჻skills⟦⟧:str
+◉Acme▓Corp┃2019┃Engineering┃alice┃bob┃rust┃python┃carol┃go┃Design┃dave┃eve┃figma┃css┃animation┃∅┃∅┃∅┃∅┃∅┃∅
+
+Questions:
+1. What skills does bob have?
+2. Who leads the Design team?
+3. How many members are on the Engineering team?
+4. What is eve's third skill?
+</div>
+
+**Expected answers:**
+1. rust, python
+2. dave
+3. 2 (bob and carol)
+4. animation
+
+If your model answers correctly with zero prompting about the format, fiche works for your use case.
 
 ### Why Path Flattening?
 
@@ -294,7 +318,7 @@ The schema line begins with `@`, optionally followed by a root key (the JSON wra
 - `float` — Floating point values
 - `str` — String values
 - `bool` — Boolean values (`true`/`false`)
-- `{type}[]` — Array of type (e.g., `str[]`, `int[]`)
+- `{type}⟦⟧` — Array of type (e.g., `str⟦⟧`, `int⟦⟧`)
 
 ### Data Rows
 
@@ -362,7 +386,7 @@ This pattern is common in API responses (`{count, next, results: [...]}`) where 
 
 <div class="readout">
   <span class="readout-label">FICHE FORMAT</span>
-@┃missions჻name:str┃missions჻crew჻0:str┃missions჻crew჻1:str┃missions჻crew჻2:str┃missions[]:str┃missions჻crew[]:str▓◉Mercury-Atlas▓6┃Glenn┃∅┃∅┃∅┃∅▓◉Apollo▓11┃Armstrong┃Aldrin┃Collins┃∅┃∅
+@┃missions჻name:str┃missions჻crew჻0:str┃missions჻crew჻1:str┃missions჻crew჻2:str┃missions⟦⟧:str┃missions჻crew⟦⟧:str▓◉Mercury-Atlas▓6┃Glenn┃∅┃∅┃∅┃∅▓◉Apollo▓11┃Armstrong┃Aldrin┃Collins┃∅┃∅
 </div>
 
 ### With Nulls
@@ -400,7 +424,7 @@ Tested against actual SWAPI data with nested arrays (films, vehicles, starships 
 
 <div class="readout">
   <span class="readout-label">SWAPI IN FICHE</span>
-@┃people჻0჻name:str┃people჻0჻height:str┃people჻0჻films჻0:str┃people჻0჻films჻1:str┃people჻0჻vehicles჻0:str┃people჻1჻name:str┃people჻1჻films჻0:str┃people[]:str┃people჻0჻films[]:str┃people჻0჻vehicles[]:str┃people჻1჻films[]:str▓◉Luke▓Skywalker┃172┃film/1┃film/2┃vehicle/14┃C-3PO┃film/1┃∅┃∅┃∅┃∅
+@┃people჻0჻name:str┃people჻0჻height:str┃people჻0჻films჻0:str┃people჻0჻films჻1:str┃people჻0჻vehicles჻0:str┃people჻1჻name:str┃people჻1჻films჻0:str┃people⟦⟧:str┃people჻0჻films⟦⟧:str┃people჻0჻vehicles⟦⟧:str┃people჻1჻films⟦⟧:str▓◉Luke▓Skywalker┃172┃film/1┃film/2┃vehicle/14┃C-3PO┃film/1┃∅┃∅┃∅┃∅
 </div>
 
 Note the `▓` (U+2593) replacing spaces in names—this prevents whitespace mangling in terminals and parsers while remaining visually distinct. Models read it as a space naturally.
