@@ -211,7 +211,13 @@ Questions:
 3. 2 (bob and carol)
 4. animation
 
-If your model answers correctly with zero prompting about the format, fiche works for your use case.
+If your model answers correctly with zero prompting about the format, fiche works for your use case. Here's the equivalent JSON for comparison—same data, same structure:
+
+```json
+{"org":{"founded":2019,"name":"Acme Corp"},"teams":[{"lead":"alice","members":[{"name":"bob","skills":["rust","python"]},{"name":"carol","skills":["go"]}],"name":"Engineering"},{"lead":"dave","members":[{"name":"eve","skills":["figma","css","animation"]}],"name":"Design"}]}
+```
+
+> **Note on size:** For single complex records, fiche's schema overhead can exceed JSON. The savings come with multiple rows of similar structure—see [Context Efficiency](#context-efficiency) for benchmarks showing 30-50% reduction on typical datasets.
 
 ### Why Path Flattening?
 
