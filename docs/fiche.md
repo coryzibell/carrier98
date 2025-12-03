@@ -14,7 +14,7 @@ title: fiche
     </div>
     <div class="meta-field">
       <span class="meta-label">Revision</span>
-      <span class="meta-value">1.7</span>
+      <span class="meta-value">1.8</span>
     </div>
     <div class="meta-field">
       <span class="meta-label">Status</span>
@@ -447,6 +447,132 @@ Tokenization is optional. Reference implementation supports:
 base-d fiche input.json
 
 # Untokenized (readable, debugging)
+base-d fiche --no-tokenize input.json
+```
+
+---
+
+## Value Dictionary (v1.8)
+
+Field name tokenization compresses the schema header. But what about repeated **values**? Log levels (`info`, `error`), status codes (`active`, `pending`), enum-like fields—these repeat across rows but aren't compressed.
+
+Value dictionaries extend tokenization to data values using a separate Unicode block: **Egyptian Hieroglyphs**.
+
+### Dual Dictionary Design
+
+| Dictionary | Script | Range | Purpose |
+|------------|--------|-------|---------|
+| Field names | Runic | U+16A0–U+16F8 | Schema paths |
+| Values | Hieroglyphs | U+13000–U+1342F | Repeated data values |
+
+The visual distinction is immediate—runic tokens appear in schema position, hieroglyphs appear in value position. No ambiguity.
+
+### Syntax
+
+Two `@` lines before the schema:
+
+```
+@ᚠ=level,ᚡ=message,ᚢ=service჻instance,ᚣ=service჻name,ᚤ=timestamp
+@𓀀=info,𓀁=debug,𓀂=error,𓀃=warn,𓀄=api,𓀅=db,𓀆=cache,𓀇=us-east-1a
+@logs┃ᚠˢ┃ᚡˢ┃ᚢˢ┃ᚣˢ┃ᚤⁱ
+◉𓀀┃Request▓received┃𓀇┃𓀄┃1701590400
+◉𓀂┃Connection▓timeout┃𓀈┃𓀅┃1701590405
+```
+
+- **Line 1**: Field name dictionary (runic)
+- **Line 2**: Value dictionary (hieroglyphs)
+- **Line 3**: Schema with tokenized field names
+- **Line 4+**: Data rows with tokenized values
+
+### Detection
+
+Parsers distinguish dictionaries by the first character after `@`:
+
+```rust
+fn is_field_token(c: char) -> bool { ('\u{16A0}'..='\u{16F8}').contains(&c) }
+fn is_value_token(c: char) -> bool { ('\u{13000}'..='\u{1342F}').contains(&c) }
+```
+
+- `@ᚠ=...` → Field dictionary (runic first char)
+- `@𓀀=...` → Value dictionary (hieroglyph first char)
+- `@logs┃...` → Schema line (ASCII first char)
+
+### Encoding Rules
+
+1. **Scan all values** across all rows
+2. **Count frequency** of each unique value
+3. **Tokenize values** appearing 2+ times (configurable threshold)
+4. **Assign hieroglyphs** starting at 𓀀 (U+13000)
+5. **Emit value dictionary** after field dictionary, before schema
+
+**Exclude from value tokenization:**
+- Numeric values (timestamps, IDs, counts)
+- Unique strings (messages, names)
+- Values appearing only once
+
+### Example: Service Logs
+
+16 log entries with repeated levels, services, and instances:
+
+<div class="readout">
+  <span class="readout-label">WITH VALUE DICTIONARY</span>
+@ᚠ=level,ᚡ=message,ᚢ=service჻instance,ᚣ=service჻name,ᚤ=timestamp
+@𓀀=info,𓀁=debug,𓀂=error,𓀃=warn,𓀄=api,𓀅=db,𓀆=cache,𓀇=us-east-1a,𓀈=us-east-1b,𓀉=us-east-1c
+@logs┃ᚠˢ┃ᚡˢ┃ᚢˢ┃ᚣˢ┃ᚤⁱ
+◉𓀀┃Request▓received┃𓀇┃𓀄┃1701590400
+◉𓀁┃Parsing▓payload┃𓀇┃𓀄┃1701590401
+◉𓀀┃Auth▓validated┃𓀇┃𓀄┃1701590402
+◉𓀃┃Slow▓query▓detected┃𓀈┃𓀅┃1701590403
+◉𓀀┃Response▓sent┃𓀇┃𓀄┃1701590404
+◉𓀂┃Connection▓timeout┃𓀈┃𓀅┃1701590405
+◉𓀀┃Cache▓hit┃𓀉┃𓀆┃1701590406
+◉𓀁┃Middleware▓executed┃𓀇┃𓀄┃1701590407
+◉𓀀┃Request▓completed┃𓀇┃𓀄┃1701590408
+◉𓀃┃Cache▓miss┃𓀉┃𓀆┃1701590409
+◉𓀀┃Query▓executed┃𓀈┃𓀅┃1701590410
+◉𓀁┃Response▓formatted┃𓀇┃𓀄┃1701590411
+◉𓀀┃Metrics▓recorded┃𓀇┃𓀄┃1701590412
+◉𓀂┃Redis▓disconnect┃𓀉┃𓀆┃1701590413
+◉𓀀┃Reconnected┃𓀈┃𓀅┃1701590414
+◉𓀀┃Health▓check▓OK┃𓀇┃𓀄┃1701590415
+
+Questions:
+1. How many error-level logs are there?
+2. Which service had the "Slow query detected" warning?
+3. What instance is the cache service running on?
+4. What was the last message from the db service?
+</div>
+
+**Expected answers:**
+1. 2 (Connection timeout, Redis disconnect)
+2. db
+3. us-east-1c
+4. Reconnected
+
+**Cold parse test:** Haiku answered all 4 correctly with zero format explanation. It recognized both dictionaries, decoded the hieroglyph tokens, and traversed the data accurately.
+
+### Size Impact
+
+For datasets with repeated categorical values:
+
+| Scenario | Without Value Dict | With Value Dict | Savings |
+|----------|-------------------|-----------------|---------|
+| 16 logs, 4 levels, 3 services | 1,054 bytes | ~850 bytes | ~20% |
+| 100 logs, same categories | ~6,500 bytes | ~4,800 bytes | ~26% |
+| 1000 logs, enum-heavy | ~65,000 bytes | ~42,000 bytes | ~35% |
+
+The more rows and the more repetition, the greater the savings.
+
+### Implementation Flag
+
+```bash
+# Full compression (field + value dictionaries)
+base-d fiche --compress input.json
+
+# Field names only (default)
+base-d fiche input.json
+
+# No tokenization
 base-d fiche --no-tokenize input.json
 ```
 
