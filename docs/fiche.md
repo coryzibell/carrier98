@@ -296,6 +296,49 @@ Here's the equivalent JSON for comparison—same data, same structure:
 
 > **Note on size:** For single complex records, fiche's schema overhead can exceed JSON. The savings come with multiple rows of similar structure—see [Context Efficiency](#context-efficiency) for benchmarks showing 30-50% reduction on typical datasets.
 
+### Large Dataset Test: Service Logs
+
+This example demonstrates fiche with 16 rows of nested log data. The schema is declared once; data rows are pure values.
+
+<div class="readout">
+  <span class="readout-label">COPY THIS (16 ROWS)</span>
+@logs┃levelˢ┃messageˢ┃service჻instanceˢ┃service჻nameˢ┃timestampⁱ
+◉info┃Request▓received┃us-east-1a┃api┃1701590400
+◉debug┃Parsing▓payload┃us-east-1a┃api┃1701590401
+◉info┃Auth▓validated┃us-east-1a┃api┃1701590402
+◉warn┃Slow▓query▓detected┃us-east-1b┃db┃1701590403
+◉info┃Response▓sent┃us-east-1a┃api┃1701590404
+◉error┃Connection▓timeout┃us-east-1b┃db┃1701590405
+◉info┃Cache▓hit┃us-east-1c┃cache┃1701590406
+◉debug┃Middleware▓executed┃us-east-1a┃api┃1701590407
+◉info┃Request▓completed┃us-east-1a┃api┃1701590408
+◉warn┃Cache▓miss┃us-east-1c┃cache┃1701590409
+◉info┃Query▓executed┃us-east-1b┃db┃1701590410
+◉debug┃Response▓formatted┃us-east-1a┃api┃1701590411
+◉info┃Metrics▓recorded┃us-east-1a┃api┃1701590412
+◉error┃Redis▓disconnect┃us-east-1c┃cache┃1701590413
+◉info┃Reconnected┃us-east-1b┃db┃1701590414
+◉info┃Health▓check▓OK┃us-east-1a┃api┃1701590415
+
+Questions:
+1. How many error-level logs are there?
+2. Which service had the "Slow query detected" warning?
+3. What instance is the cache service running on?
+4. What was the last message from the db service?
+</div>
+
+**Expected answers:**
+1. 2 (Connection timeout, Redis disconnect)
+2. db
+3. us-east-1c
+4. Reconnected
+
+**Size comparison:**
+- JSON: 2,138 bytes
+- fiche: 1,054 bytes (51% reduction)
+
+With 16 rows sharing the same schema, fiche cuts size in half. The schema overhead is amortized across all rows.
+
 ### Why This Hybrid Approach?
 
 fiche uses two strategies for arrays:
