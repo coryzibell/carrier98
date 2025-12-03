@@ -14,7 +14,7 @@ title: fiche
     </div>
     <div class="meta-field">
       <span class="meta-label">Revision</span>
-      <span class="meta-value">1.4</span>
+      <span class="meta-value">1.5</span>
     </div>
     <div class="meta-field">
       <span class="meta-label">Status</span>
@@ -239,6 +239,99 @@ fiche uses two strategies for arrays:
 - Single token for each separator (Georgian comma `჻` and diamond `◈` are rare in content)
 
 > **Note:** The Georgian comma `჻` (U+10FB) was chosen for its visibility and rarity. It's distinct at a glance and almost never appears in real data.
+
+---
+
+## Field Name Tokenization
+
+For maximum compression, fiche can tokenize field names using single Unicode characters from ancient scripts. This reduces schema overhead while remaining regex-safe—no ASCII, no digits, no modern text patterns.
+
+### Token Alphabet
+
+Tokens are assigned from these Unicode ranges in order:
+
+| Priority | Script | Range | Count | Plane |
+|----------|--------|-------|-------|-------|
+| 1 | Runic | U+16A0 – U+16F8 | 89 | BMP |
+| 2 | Egyptian Hieroglyphs | U+13000 – U+1342F | 1072 | SMP |
+| 3 | Cuneiform | U+12000 – U+123FF | 1024 | SMP |
+
+**Why this order:**
+- **Runic first**: Basic Multilingual Plane (BMP) means 2-byte UTF-8, better compatibility across systems
+- **Hieroglyphs/Cuneiform overflow**: Supplementary Multilingual Plane (SMP) requires 4-byte UTF-8, used only for schemas with 90+ fields
+
+89 runic characters cover the vast majority of real-world schemas.
+
+### Token Map Syntax
+
+The schema line includes a token map in the metadata section:
+
+```
+@ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=comments,ᚤ=author,ᚥ=text,ᚦ=replies
+ᚠ჻ᚡ:str┃ᚠ჻ᚢ:str┃ᚣ჻0჻ᚤ:str┃ᚣ჻0჻ᚥ:str┃ᚣ჻0჻ᚦ჻0჻ᚤ:str┃...
+```
+
+**Format:** `@` followed by comma-separated `token=fieldname` pairs, then the schema fields.
+
+### Example: Tokenized vs Untokenized
+
+**Untokenized (readable):**
+```
+@┃video჻id:str┃video჻title:str┃comments჻0჻author:str┃comments჻0჻text:str
+◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃alice┃Classic!
+```
+
+**Tokenized (compact):**
+```
+@ᚠ=video,ᚡ=id,ᚢ=title,ᚣ=comments,ᚤ=author,ᚥ=text
+ᚠ჻ᚡ:str┃ᚠ჻ᚢ:str┃ᚣ჻0჻ᚤ:str┃ᚣ჻0჻ᚥ:str
+◉dQw4w9WgXcQ┃Never▓Gonna▓Give▓You▓Up┃alice┃Classic!
+```
+
+Data rows are unchanged—only schema field names are tokenized.
+
+### Why Ancient Scripts?
+
+| Requirement | Solution |
+|-------------|----------|
+| No ASCII collision | Ancient scripts contain no Latin, digits, or punctuation |
+| No regex match | `\w`, `[a-zA-Z0-9]`, `\d` won't match runic/hieroglyphs |
+| No delimiter collision | Scripts don't include `┃`, `჻`, `◈`, `⟦⟧`, etc. |
+| Model parseability | Tested: Haiku parses tokenized schemas cold with 100% accuracy |
+| Visual distinction | Immediately obvious these are tokens, not data |
+
+### Tokenization Rules
+
+1. **Collect unique field names** from flattened schema paths
+2. **Assign tokens** starting at ᚠ (U+16A0), incrementing through runic
+3. **Overflow to hieroglyphs** at 𓀀 (U+13000) if runic exhausted
+4. **Overflow to cuneiform** at 𒀀 (U+12000) if hieroglyphs exhausted
+5. **Exclude from tokenization:**
+   - Array indices (remain as digits: `჻0჻`, `჻1჻`)
+   - Type annotations (`:str`, `:int`, etc.)
+   - Array markers (`⟦⟧`)
+
+### Constraints
+
+**DO NOT use as tokens:**
+- ASCII characters (0x00–0x7F)
+- Digits in any script
+- fiche delimiters (`◉`, `┃`, `჻`, `◈`, `∅`, `▓`, `⟦`, `⟧`)
+- Common Unicode punctuation
+
+**Numeric tokens break parsing.** Array indices use digits (`჻0჻`, `჻1჻`), so numeric tokens like `1=field` create ambiguity in paths like `1჻0჻2`—is `1` a token or index? Ancient scripts avoid this entirely.
+
+### Implementation Flag
+
+Tokenization is optional. Reference implementation supports:
+
+```bash
+# Tokenized (default for compact output)
+base-d fiche input.json
+
+# Untokenized (readable, debugging)
+base-d fiche --no-tokenize input.json
+```
 
 ---
 
