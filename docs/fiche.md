@@ -6,7 +6,7 @@ title: fiche
 <div class="doc-header">
   <div class="classification">MODEL-READABLE</div>
   <h1>fiche</h1>
-  <p class="subtitle">structured data format for human-machine collaboration</p>
+  <p class="subtitle">structured data format optimized for LLM consumption</p>
   <div class="doc-meta">
     <div class="meta-field">
       <span class="meta-label">Document</span>
@@ -25,9 +25,11 @@ title: fiche
 
 ## Abstract
 
-**fiche** is a model-readable structured data format. Where carrier98 is opaque—maximum density, the model shuttles data without parsing—fiche is transparent. The model reads the structure. The human reads the structure. Both work from the same document.
+**fiche** is a structured data format optimized for LLM consumption. The goal is simple: **fewer tokens, less money.**
 
-Named for microfiche: data compressed onto film, readable by machine and eye alike. The format that archived the space program.
+JSON wastes tokens on syntax—quotes, braces, colons, repeated keys. fiche eliminates this overhead while keeping data parseable by models. Where carrier98 is opaque (maximum density, the model shuttles without parsing), fiche is transparent—the model reads and reasons over the structure directly.
+
+Human readability is a secondary benefit, useful for debugging and inspection. But make no mistake: fiche exists because every token costs money, and JSON burns tokens on ceremony.
 
 <div class="readout">
   <span class="readout-label">EXAMPLE OUTPUT</span>
@@ -46,16 +48,19 @@ Named for microfiche: data compressed onto film, readable by machine and eye ali
 
 ## Design Philosophy
 
-Before computers verified trajectories, humans calculated them by hand. The machine checked the work. Both needed to read the same numbers.
+Every API call has a cost. Every token in that call adds to it. fiche is designed around one principle: **minimize tokens while maximizing model comprehension.**
 
-fiche follows this principle: **one document, two readers.**
+**Primary goals:**
+- **Token efficiency** — Eliminate JSON's syntactic overhead
+- **Model parseability** — Structure that LLMs extract accurately without examples
+- **Schema compression** — Declare field names once, reference by position
 
-- The model parses structure with minimal tokens
-- The human scans data without decoding
-- No escaping—quotes, braces, newlines are just content
-- Schema declared once, values positional
+**Secondary benefits:**
+- Human-scannable for debugging
+- Grep-friendly for quick inspection
+- No escaping needed—quotes, braces, newlines are just content
 
-> When Katherine Johnson calculated orbital mechanics for John Glenn's flight, she used the same notation the IBM 7090 used. The format served both. fiche serves both.
+> The format is optimized for the machine that costs money to run. Human readability comes along for the ride.
 
 ---
 
@@ -438,16 +443,21 @@ Data rows are unchanged—only schema field names are tokenized.
 
 **Numeric tokens break parsing.** Array indices use digits (`჻0჻`, `჻1჻`), so numeric tokens like `1=field` create ambiguity in paths like `1჻0჻2`—is `1` a token or index? Ancient scripts avoid this entirely.
 
-### Implementation Flag
-
-Tokenization is optional. Reference implementation supports:
+### CLI Flags
 
 ```bash
-# Tokenized (default for compact output)
-base-d fiche input.json
+# Full compression (default) - field + value tokenization
+base-d fiche encode input.json
+base-d fiche encode --level full input.json
 
-# Untokenized (readable, debugging)
-base-d fiche --no-tokenize input.json
+# Light compression - field tokenization only
+base-d fiche encode --level light input.json
+
+# No compression - human-readable
+base-d fiche encode --level none input.json
+
+# Multiline output (any level)
+base-d fiche encode --multiline input.json
 ```
 
 ---
@@ -563,18 +573,9 @@ For datasets with repeated categorical values:
 
 The more rows and the more repetition, the greater the savings.
 
-### Implementation Flag
+### CLI Usage
 
-```bash
-# Full compression (field + value dictionaries)
-base-d fiche --compress input.json
-
-# Field names only (default)
-base-d fiche input.json
-
-# No tokenization
-base-d fiche --no-tokenize input.json
-```
+See [CLI Flags](#cli-flags) above. Full compression (`--level full`) is the default.
 
 ---
 
