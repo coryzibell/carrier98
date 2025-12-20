@@ -38,7 +38,7 @@ carrier98 is an LLM-to-LLM wire protocol for structured data. It modulates seria
 
 The carrier stays the same. The human gets JSON. Everyone wins.
 
-**Jump to:** [Philosophy](#philosophy) · [Wire Format](#wire-format) · [Alphabet](#alphabet) · [Binary Format](#binary-format) · [Benchmarks](#benchmarks) · [Implementations](#implementations) · [**fiche** →](fiche)
+**Jump to:** [Philosophy](#philosophy) · [Wire Format](#wire-format) · [Alphabet](#alphabet) · [Binary Format](#binary-format) · [Benchmarks](#benchmarks) · [Implementations](#implementations) · [**stele** →](https://coryzibell.github.io/stele/)
 
 ---
 
@@ -246,25 +246,25 @@ carrier98 trades bandwidth for context density. The display96 alphabet uses ~3 b
 |--------|--------------|-------------------|---------------|
 | JSON | Every token | Yes | Human readability |
 | TOON | Fewer delimiters | Yes | Model readability |
-| **fiche** | Minimal delimiters | Yes | Model efficiency |
+| **stele** | Minimal delimiters | Yes | Model efficiency |
 | **carrier98** | Nothing | No (opaque) | Model carrying data |
 
-**carrier98** and **fiche** are siblings:
+**carrier98** and **stele** are siblings:
 
 - **carrier98** = the pipe. Opaque binary wrapped in hieroglyphs. Maximum density. The model shuttles it without parsing.
-- **fiche** = the format. Model-readable structured data with Unicode delimiters. The model can parse and operate on it.
+- **stele** = the format. Model-readable structured data with Unicode delimiters. The model can parse and operate on it.
 
-> **In practice:** When you need a model to *work with* data, use fiche. When you need a model to *move* data untouched, use carrier98. The pipe carries the format.
+> **In practice:** When you need a model to *work with* data, use stele. When you need a model to *move* data untouched, use carrier98. The pipe carries the format.
 
-**[Read the full fiche specification →](fiche)**
+**[Read the full stele specification →](https://coryzibell.github.io/stele/spec)**
 
 ---
 
-## fiche Format (Summary)
+## stele Format (Summary)
 
 A model-readable structured data format. Uses rare Unicode delimiters so models parse structure with minimal tokens. No escaping needed - quotes, braces, newlines are just content.
 
-For the complete specification, examples, and design philosophy, see the **[fiche documentation](fiche)**.
+For the complete specification, examples, and design philosophy, see the **[stele documentation](https://coryzibell.github.io/stele/spec)**.
 
 ### Delimiters
 
@@ -331,10 +331,10 @@ The hieroglyph frame signals "decode me first."
 ### Pipeline
 
 ```
-JSON → fiche (model workspace) → carrier98 (transit) → fiche → JSON
+JSON → stele (model workspace) → carrier98 (transit) → stele → JSON
 ```
 
-The model works in fiche, the wire uses carrier98. Best of both.
+The model works in stele, the wire uses carrier98. Best of both.
 
 ---
 
